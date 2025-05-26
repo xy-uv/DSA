@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive DSA Curriculum with JavaScript</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .sidebar-link {
+        transition: all 0.2s ease-in-out;
+      }
+      .sidebar-link:hover,
+      .sidebar-link.active {
+        background-color: #0284c7;
+        color: white;
+      }
+      .content-section {
+        display: none;
+      }
+      .content-section.active {
+        display: block;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 500px;
+        max-height: 600px;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 600px;
+        }
+      }
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      .prose-custom ul {
+        list-style-type: disc;
+        margin-left: 1.5rem;
+      }
+      .prose-custom ul ul {
+        list-style-type: circle;
+        margin-left: 1.5rem;
+      }
+      .prose-custom h2 {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+        margin-top: 1.5rem;
+        font-weight: 600;
+      }
+      .prose-custom h3 {
+        font-size: 1.35rem;
+        margin-bottom: 0.5rem;
+        margin-top: 1.25rem;
+        font-weight: 600;
+      }
+      .prose-custom p {
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+      }
+      .formula {
+        font-family: "Courier New", Courier, monospace;
+        background-color: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      .game-begins-separator {
+        text-align: center;
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #059669; /* Emerald */
+        padding: 2rem 0;
+        border-top: 2px solid #d1d5db;
+        border-bottom: 2px solid #d1d5db;
+        margin: 2rem 0;
+      }
+    </style>
+  </head>
+  <body class="bg-stone-100 text-stone-800">
+    <div class="flex flex-col md:flex-row min-h-screen">
+      <aside
+        class="w-full md:w-72 bg-stone-200 p-6 space-y-2 shadow-lg md:sticky md:top-0 md:h-screen md:overflow-y-auto"
+      >
+        <h1
+          class="text-2xl font-bold text-sky-700 mb-6 border-b-2 border-sky-300 pb-2"
+        >
+          DSA with JS
+        </h1>
+        <nav id="sidebarNav"></nav>
+      </aside>
+
+      <main class="flex-1 p-6 md:p-10 prose-custom max-w-none">
+        <section id="overview" class="content-section active">
+          <h2 class="text-3xl font-bold text-sky-700 mb-6">
+            Welcome to the Interactive DSA Curriculum!
+          </h2>
+          <p class="text-lg mb-4">
+            This interactive guide provides a structured path to learning Data
+            Structures and Algorithms (DSA) using JavaScript. The curriculum is
+            broken down into "Video" topics, mirroring a course structure. Use
+            the sidebar to navigate through different modules.
+          </p>
+          <p class="text-lg mb-8">
+            Below is a chart showing the distribution of key learning items
+            (questions and core concepts) across the major topics in this
+            curriculum. This can help you visualize the scope of each section.
+          </p>
+          <div class="chart-container bg-white p-4 rounded-lg shadow-md">
+            <canvas id="curriculumChart"></canvas>
+          </div>
+        </section>
+
+        <section id="game_begins_section" class="content-section">
+          <div class="game-begins-separator">THE REAL GAME BEGINS HERE...</div>
+          <p class="text-center text-lg">
+            The following sections delve into more advanced Data Structures and
+            Algorithms, building upon the foundational concepts covered earlier.
+            These topics are crucial for tackling complex problems and excelling
+            in software engineering interviews and development.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const rawContent = `Data Structures and Algorithms with JavaScript: A Comprehensive Learning Path
+This series of videos aims to provide a thorough understanding of Data Structures and Algorithms (DSA) using JavaScript. Starting from the very basics of JavaScript, the course gradually moves towards complex topics like sorting, searching, trees, and graphs, all while providing practical problem-solving examples. Each section is designed to build foundational knowledge and then challenge learners with progressively difficult problems.
+Video 01: Basic Logic in JS - Variables, Operators, and Operations
+This introductory video lays the groundwork by covering the fundamental building blocks of JavaScript programming. You'll learn how to store data, perform calculations, and interact with basic input/output.
+Core Concepts:
+Variable declaration and assignment (var, let, const)
+Data types (Number, String, Boolean, Null, Undefined)
+Arithmetic operators (+, -, *, /, %, **)
+Assignment operators (=, +=, -=, etc.)
+Comparison operators (==, ===, !=, !==, >, <, >=, <=)
+Logical operators (&&, ||, !)
+Type Coercion and Type Conversion
+Introduction to Math object and its common functions (Math.abs(), Math.round(), Math.floor(), Math.ceil(), Math.random(), Math.pow(), Math.sqrt()).
+Problems:
+Easy:
+P1.1 Sum of Two Integers: Accept two integers from the user and print their sum.
+P1.2 Relation between Integer & String: Demonstrate how to concatenate an integer and a string, and how to convert a string to an integer for arithmetic operations.
+P1.3 Sum and Message: Calculate the sum of two numbers and display the result within a descriptive message (e.g., "The sum is: [result]").
+Medium:
+P1.4 Swap Two Variables: Swap the values of two variables using three different methods:
+Using a temporary variable.
+Using arithmetic operations (without a temporary variable).
+Using array destructuring (ES6+).
+P1.5 Calculate Area and Perimeter of Rectangle: Accept the length and width of a rectangle and calculate both its area and perimeter.
+Hard:
+P1.6 Area of Triangle by Heron's Formula: Accept the lengths of three sides of a triangle and calculate its area using Heron's formula: A=s(s−a)(s−b)(s−c)​, where s=(a+b+c)/2. Handle invalid triangle inputs (e.g., sides not forming a triangle).
+P1.7 Circumference of Circle: Accept the radius of a circle and calculate its circumference (C=2πr). Use Math.PI for the value of pi.
+Video 02: Conditional Statements
+This video focuses on controlling the flow of execution based on conditions. You'll learn how to make decisions in your code using if-else, switch, and ternary operators.
+Core Concepts:
+if, else if, else statements
+Ternary operator (condition ? expr1 : expr2)
+switch statement
+Handling multiple cases in a switch statement (fall-through).
+Problems:
+Easy:
+P2.1 Valid User: Ask the user for a username and password. If both match predefined values (e.g., "admin" and "password123"), print "Login Successful"; otherwise, print "Invalid Credentials."
+P2.2 Shop Discount: A shop offers a 10% discount if the total purchase amount is over $100. Accept the total amount and print the final amount after applying the discount, if applicable.
+Medium:
+P2.3 Electricity Bill Calculator: Calculate an electricity bill based on the following slabs:
+First 50 units:
+Next 100 units: 0.75/unit
+Next 100 units: 1.20/unit
+Above 250 units: 1.50/unit Add a fixed charge of 20.00.
+P2.4 BDT/INR Denomination: Accept an amount (e.g., in BDT or INR) and print the minimum number of currency notes required for various denominations (e.g., 1000, 500, 100, 50, 20, 10, 5, 2, 1).
+Hard:
+P2.5 Leap Year Checker: Accept a year from the user and determine if it's a leap year. A leap year is divisible by 4, but not by 100 unless it is also divisible by 400.
+P2.6 Simple Calculator: Create a command-line calculator that takes two numbers and an operator (+, -, *, /) as input, then performs the operation using a switch statement. Handle division by zero.
+Video 03: Loops
+This video covers iterative constructs for repeating blocks of code. You'll learn how to perform repetitive tasks efficiently using for, while, and do-while loops.
+Core Concepts:
+for loop: Initialization, condition, increment/decrement.
+while loop: Condition-controlled loop.
+do-while loop: Ensures at least one execution.
+break and continue statements.
+Problems:
+Easy:
+P3.1 Print 'Hello World' N Times: Accept an integer N from the user and print "Hello World" N times using a for loop.
+P3.2 Print Numbers 1 to N and N to 1: Accept an integer N and print numbers from 1 to N using a for loop, then print numbers from N to 1 using another for loop.
+P3.3 Sum of N Natural Numbers: Calculate the sum of the first N natural numbers using a for loop.
+Medium:
+P3.4 Factorial of a Number: Calculate the factorial of a given non-negative integer N using a for loop.
+P3.5 Factors of a Number: Accept an integer N and print all its factors.
+P3.6 Prime Number Checker: Accept an integer N and determine if it's a prime number using a loop.
+Hard:
+P3.7 Sum of Digits: Accept an integer and calculate the sum of its digits using a while loop.
+P3.8 Reverse of a Number: Accept an integer and print its reverse using a while loop.
+P3.9 Strong Number Check: Accept a number and check if it's a "strong number" (a number whose sum of the factorial of its digits is equal to the number itself, e.g., 145=1!+4!+5!=1+24+120=145).
+P3.10 Guess the Number Game: Implement a simple number guessing game. The program generates a random number between 1 and 100. The user keeps guessing until they guess correctly. Provide hints ("too high", "too low"). Use a do-while loop.
+Video 04: Pattern Programming
+This video introduces the concept of nested loops for generating various text-based patterns, which is excellent for building logical thinking and loop control.
+Core Concepts:
+Nested for loops: Outer loop for rows, inner loop for columns.
+Controlling spaces and characters to form shapes.
+Problems:
+Easy:
+P4.1 Solid Rectangle: Print a solid rectangle of stars (*) of given rows and columns.
+*****
+*****
+*****
+
+P4.2 Right-Angled Triangle (Stars): Print a right-angled triangle pattern of stars.
+*
+**
+***
+****
+*****
+
+Medium:
+
+P4.3 Hollow Rectangle: Print a hollow rectangle of stars.
+*****
+* *
+* *
+*****
+
+P4.4 Inverted Right-Angled Triangle (Numbers): Print an inverted right-angled triangle with numbers.
+12345
+1234
+123
+12
+1
+
+Hard:
+
+P4.5 Diamond Pattern: Print a diamond pattern of stars.
+    *
+   ***
+  *****
+ *******
+*********
+ *******
+  *****
+   ***
+    *
+
+P4.6 Pascal's Triangle: Print the first N rows of Pascal's Triangle.
+      1
+     1 1
+    1 2 1
+   1 3 3 1
+  1 4 6 4 1
+
+
+Video 05: Array
+This video introduces the fundamental data structure: the Array. You'll learn how to store collections of data and perform basic operations on them.
+Core Concepts:
+Introduction to Arrays: What they are, indexing, mutable nature.
+Declaration and initialization of arrays.
+Accessing and modifying array elements.
+Fixed vs. Dynamic size (JavaScript arrays are dynamic).
+Common array methods (push(), pop(), shift(), unshift(), splice(), slice(), indexOf(), includes(), forEach(), map(), filter(), reduce()).
+Problems:
+Easy:
+P5.1 Sum of Array Elements: Accept N numbers from the user, store them in an array, and calculate the sum of all elements.
+P5.2 Find Max Element: Given an array of numbers, find and print the maximum element.
+Medium:
+P5.3 Find Second Max Element: Given an array of numbers, find and print the second largest element. Handle edge cases like arrays with less than two unique elements.
+P5.4 Reverse the Array: Reverse the elements of an array in-place (without creating a new array).
+Hard:
+P5.5 Move Zeroes to Left, Ones to Right: Given an array containing only 0s and 1s, rearrange it such that all 0s are on the left side and all 1s are on the right side. Do this in a single pass (Dutch National Flag problem variant).
+P5.6 Remove Duplicates from Sorted Array: Given a sorted array, remove the duplicate elements in-place such that each unique element appears only once. Return the new length of the array.
+Video 06: String
+This video focuses on string manipulation in JavaScript, exploring various built-in methods and common string-related algorithms.
+Core Concepts:
+Introduction to Strings: Immutable sequences of characters.
+String literals vs. String objects.
+String properties (length).
+Common string methods (charAt(), charCodeAt(), indexOf(), lastIndexOf(), substring(), slice(), concat(), split(), join(), toLowerCase(), toUpperCase(), trim(), replace(), replaceAll()).
+Problems:
+Easy:
+P6.1 Print Each Character on New Line: Accept a string and print each character on a new line.
+P6.2 Print in Reverse Order: Accept a string and print its characters in reverse order.
+Medium:
+P6.3 Check if String is Palindrome: Accept a string and check if it's a palindrome (reads the same forwards and backward, ignoring case and non-alphanumeric characters).
+P6.4 Toggle Each Character Case: Accept a string and convert all uppercase characters to lowercase and all lowercase characters to uppercase.
+Hard:
+P6.5 Frequency of Each Character: Accept a string and count the frequency of each character in it. Print the characters and their counts.
+P6.6 Anagram Checker: Accept two strings and determine if they are anagrams of each other (contain the same characters with the same frequencies, regardless of order).
+Video 07: OOP (Class and Object)
+This video introduces Object-Oriented Programming (OOP) concepts in JavaScript, focusing on how to structure code using classes and objects for better organization and reusability.
+Core Concepts:
+Introduction to OOP principles: Encapsulation, Inheritance, Polymorphism, Abstraction.
+Classes: Blueprints for creating objects (class keyword).
+Objects: Instances of classes.
+Constructor: Special method for initializing object properties (constructor() method).
+Methods: Functions associated with objects.
+this keyword: Understanding its context within methods.
+Prototype Object: JavaScript's prototype-based inheritance model.
+Getters and Setters.
+Problems (Design-Oriented):
+Easy:
+P7.1 Design a Person Class: Create a Person class with properties name and age, and a method greet() that prints "Hello, my name is [name] and I am [age] years old."
+P7.2 Design a Rectangle Class: Create a Rectangle class with properties width and height, and methods getArea() and getPerimeter().
+Medium:
+P7.3 Design a BankAccount Class: Create a BankAccount class with properties accountNumber, accountHolderName, and balance. Include methods for deposit(amount), withdraw(amount), and checkBalance(). Handle insufficient funds for withdrawal.
+P7.4 Design a Book and Library System:
+Create a Book class with properties title, author, and isbn.
+Create a Library class that manages a collection of Book objects. Include methods to addBook(book), removeBook(isbn), and listAllBooks().
+Hard:
+P7.5 Design a Vehicle Hierarchy:
+Create a base Vehicle class with properties like make, model, year, and a start() method.
+Create derived classes Car and Motorcycle that inherit from Vehicle.
+Add specific properties and methods to Car (e.g., numDoors, drive()) and Motorcycle (e.g., hasSidecar, wheelie()). Demonstrate method overriding if applicable.
+P7.6 Design a Simple Shopping Cart:
+Create an Item class with name, price, and quantity.
+Create a ShoppingCart class with methods to addItem(item), removeItem(itemName), getTotal(), and viewCart().
+Video 08: Advanced Array Problems
+This video delves into more complex array manipulation problems, often requiring optimized solutions and a deeper understanding of algorithms.
+Core Concepts:
+Two-pointer technique
+Sliding window
+Kadane's algorithm
+Moore's Voting Algorithm
+Problems:
+Easy:
+P8.1 Left and Right Rotation by K Elements: Given an array and an integer K, rotate the array to the left by K positions. Then, rotate it to the right by K positions.
+P8.2 Merge Sorted Arrays: Given two sorted arrays nums1 and nums2, merge nums2 into nums1 as one sorted array. nums1 has enough space to hold elements from both arrays.
+Medium:
+P8.3 Best Time to Buy and Sell Stock: You are given an array prices where prices[i] is the price of a given stock on the i-th day. Find the maximum profit you can achieve. You may complete at most one transaction (i.e., buy one and sell one share of the stock).
+P8.4 Sort Colors (Dutch National Flag Problem): Given an array nums with N objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue. Use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.
+Hard:
+P8.5 Maximum Subarray (Kadane's Algorithm): Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
+P8.6 Majority Element (Moore's Voting Algorithm): Given an array nums of size N, return the majority element. The majority element is the element that appears more than ⌊N/2⌋ times.
+P8.7 Trapping Rain Water: Given N non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+Video 09: Sorting Algorithms - Part 1
+This video introduces fundamental comparison-based sorting algorithms, explaining their mechanics, time complexity, and practical applications.
+Core Concepts:
+Bubble Sort: Repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order.
+Selection Sort: Divides the input list into two parts: a sorted sublist and an unsorted sublist. It repeatedly selects the smallest (or largest) element from the unsorted sublist and moves it to the sorted sublist.
+Insertion Sort: Builds the final sorted array (or list) one item at a time. It iterates through the input elements and inserts each element into its correct position in the already sorted part of the array.
+Time and Space Complexity analysis for each algorithm.
+Problems:
+Easy:
+P9.1 Implement Bubble Sort: Implement the Bubble Sort algorithm to sort an array of integers in ascending order.
+P9.2 Implement Selection Sort: Implement the Selection Sort algorithm to sort an array of integers in ascending order.
+Medium:
+P9.3 Implement Insertion Sort: Implement the Insertion Sort algorithm to sort an array of integers in ascending order.
+P9.4 Sort Strings by Length (using any basic sort): Given an array of strings, sort them based on their length in ascending order. If lengths are equal, maintain original relative order.
+Hard:
+P9.5 Find Kth Smallest Element (using a basic sort approach): Given an array and an integer K, find the K-th smallest element in the array. (While more efficient methods exist, solve this using one of the basic sorting algorithms learned).
+P9.6 Sort an Array of Objects: Given an array of objects (e.g., [{name: 'Alice', score: 85}, {name: 'Bob', score: 92}]), sort them based on a specific property (e.g., score) using one of the basic sorting algorithms.
+Video 10: Sorting Algorithms - Part 2
+This video covers more advanced and efficient sorting algorithms that utilize the divide-and-conquer paradigm.
+Core Concepts:
+Quick Sort: A highly efficient, in-place, comparison-based sorting algorithm. It works by selecting a 'pivot' element from the array and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot.
+Merge Sort: A stable, comparison-based, divide-and-conquer sorting algorithm. It divides the unsorted list into N sublists, each containing one element (a list of one element is considered sorted), and then repeatedly merges sublists to produce new sorted sublists until there is only one sorted list remaining.
+Time and Space Complexity analysis for each algorithm, especially the O(NlogN) average case for Quick Sort and guaranteed O(NlogN) for Merge Sort.
+Problems:
+Easy:
+P10.1 Implement Quick Sort: Implement the Quick Sort algorithm to sort an array of integers in ascending order.
+P10.2 Implement Merge Sort: Implement the Merge Sort algorithm to sort an array of integers in ascending order.
+Medium:
+P10.3 Sort a Linked List (using Merge Sort): Given the head of a singly linked list, sort it using Merge Sort and return the head of the sorted list.
+P10.4 Find Inversions in an Array (using Merge Sort modification): Given an array, find the number of inversions. An inversion is a pair (i,j) such that i<j and arr[i]>arr[j]. Solve this efficiently by modifying the Merge Sort algorithm.
+Hard:
+P10.5 Sort an Array of 0s, 1s, and 2s (without counting or extra space): Given an array containing only 0s, 1s, and 2s, sort it in-place in O(N) time and O(1) space. (This is the Dutch National Flag Problem again, but reinforces the idea of efficient single-pass sorting).
+P10.6 Kth Largest Element in an Array (using Quickselect): Find the K-th largest element in an unsorted array. This can be efficiently solved using a variation of Quick Sort called Quickselect.
+Video 11: Cyclic Sort
+This video introduces the Cyclic Sort pattern, which is highly efficient for arrays containing numbers in a specific range (e.g., 1 to N or 0 to N).
+Core Concepts:
+The idea of placing each element at its correct sorted position.
+Useful when numbers are distinct and within a specific range.
+Problems:
+Easy:
+P11.1 Missing Number: Given an array nums containing N distinct numbers in the range [0,N], return the only number in the range that is missing from the array.
+Medium:
+P11.2 Find All Disappeared Numbers in an Array: Given an array nums of N integers where nums[i] is in the range [1,N], return an array of all the integers in the range [1,N] that do not appear in nums.
+P11.3 Find the Duplicate Number: Given an array nums containing N+1 integers where each integer is between 1 and N (inclusive). Assume that there is only one duplicate number, find the duplicate.
+Hard:
+P11.4 First Missing Positive: Given an unsorted integer array nums, return the smallest missing positive integer. You must implement an algorithm that runs in O(N) time and uses O(1) auxiliary space.
+P11.5 Find All Duplicates in an Array: Given an integer array nums of length N where all the integers of nums are in the range [1,N] and each integer appears once or twice, return an array of all the integers that appears twice.
+Video 12: Binary Search
+This section focuses on the highly efficient binary search algorithm and its various applications in sorted data.
+Core Concepts:
+How binary search works: Divide and conquer approach.
+Prerequisites: Sorted array/list.
+Iterative and recursive implementations.
+Finding first/last occurrence of an element.
+Understanding search space reduction.
+Problems:
+Easy:
+P12.1 Binary Search Implementation: Implement the standard binary search algorithm to find a target value in a sorted array. Return the index if found, otherwise -1.
+P12.2 Search Insert Position: Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+Medium:
+P12.3 Search in Rotated Sorted Array: Given a sorted array that has been rotated at some pivot unknown to you beforehand (e.g., [0,1,2,4,5,6,7] might become [4,5,6,7,0,1,2]), search for a target element.
+P12.4 Find Peak Element: A peak element is an element that is strictly greater than its neighbors. Given a 0-indexed integer array nums, find a peak element and return its index. If the array contains multiple peaks, return the index to any of the peaks.
+Hard:
+P12.5 Book Allocation Problem: Given an array A of integer page counts of N books, and an integer M number of students. Each student must be allocated at least one book. Books must be allocated in a contiguous manner. Determine the minimum number of pages a student has to read.
+P12.6 Koko Eating Bananas: Koko loves to eat bananas. There are N piles of bananas, the i-th pile has piles[i] bananas. The guards have gone and will come back in H hours. Koko can decide her bananas-per-hour eating speed of K. Return the minimum integer K such that she can eat all the bananas within H hours.
+P12.7 Smallest Divisor Given a Threshold: Given an array of integers nums and an integer threshold, we will choose a positive integer divisor, divide every element in nums by divisor, and sum the division results (rounded up). Find the smallest divisor such that the sum is less than or equal to threshold.
+Video 13: Hashing
+This section introduces hashing for efficient data storage and retrieval, utilizing JavaScript's built-in Map and Set objects.
+Core Concepts:
+Hash Functions: Mapping keys to indices.
+Collision Resolution: How to handle different keys mapping to the same index (brief overview).
+Map (Hash Map / Dictionary): Storing key-value pairs with O(1) average time complexity for insertion, deletion, and lookup.
+Set (Hash Set): Storing unique values with O(1) average time complexity for addition, deletion, and checking presence.
+Time and Space Complexity for Map and Set operations.
+Problems:
+Easy:
+P13.1 Print Frequency of Each Number: Given an array of integers, print the frequency (count) of each number using a Map.
+P13.2 Print Unique Elements: Given an array of integers, print all unique elements using a Set.
+Medium:
+P13.3 Check if Sentence is Pangram: A pangram is a sentence where every letter of the English alphabet appears at least once. Given a string sentence, return true if sentence is a pangram, or false otherwise. (Case-insensitive)
+P13.4 Sort People by Height: You are given an array of strings names, and an array of unique positive integers heights where heights[i] is the height of the ith person. Return the names array sorted in descending order by the people's heights.
+Hard:
+P13.5 Two Sum: Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. Assume each input would have exactly one solution, and you may not use the same element twice.
+P13.6 Subarray Sum Equals K: Given an array of integers nums and an integer k, return the total number of continuous subarrays whose sum equals k.
+P13.7 Longest Consecutive Sequence: Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence. You must write an algorithm that runs in O(N) time.
+Video 14: Linked List
+This section covers the Linked List data structure, a fundamental linear data structure where elements are not stored at contiguous memory locations.
+Core Concepts:
+Node structure (data and next pointer).
+Singly Linked List: Head, tail, traversal.
+Doubly Linked List (brief mention).
+Circular Linked List (brief mention).
+Advantages and disadvantages compared to arrays.
+Problems:
+Easy:
+P14.1 Design Linked List: Implement a basic Singly Linked List class with methods: addAtHead(val), addAtTail(val), get(index), deleteAtIndex(index).
+P14.2 Middle of the Linked List: Given the head of a singly linked list, return the middle node of the list. If there are two middle nodes, return the second middle node.
+Medium:
+P14.3 Linked List Cycle: Given the head of a linked list, return true if there is a cycle in the linked list. Otherwise, return false. (Floyd's Cycle-Finding Algorithm).
+P14.4 Reverse Linked List: Given the head of a singly linked list, reverse the list, and return the reversed list. Implement both iteratively and recursively.
+Hard:
+P14.5 Delete Node in a Linked List: Write a function to delete a node in a singly-linked list. You will not be given access to the head of the list, instead, you will be given access to the node to be deleted directly. It is guaranteed that the node to be deleted is not a tail node.
+P14.6 Reverse Nodes in K-Group: Given the head of a linked list, reverse the nodes of the list K at a time, and return the modified list. If the number of nodes is not a multiple of K then left-out nodes, in the end, should remain as it is.
+P14.7 Merge Two Sorted Lists: Merge two sorted linked lists into a single sorted linked list. Return the head of the merged linked list.
+Video 15: Queue and Stack
+This section covers the Stack and Queue abstract data types, which are crucial for many algorithms, particularly those involving expression evaluation, backtracking, and graph traversals.
+Core Concepts:
+Stack (LIFO - Last In, First Out): Operations: push(), pop(), peek(), isEmpty(), size().
+Queue (FIFO - First In, First Out): Operations: enqueue(), dequeue(), peek(), isEmpty(), size().
+Implementations using arrays and linked lists.
+Problems:
+Easy:
+P15.1 Implement Stack using Array: Implement a Stack data structure using a JavaScript array.
+P15.2 Implement Queue using Array: Implement a Queue data structure using a JavaScript array.
+Medium:
+P15.3 Valid Parentheses: Given a string s containing just the characters (, ), {, }, [, ], determine if the input string is valid. An input string is valid if:
+Open brackets must be closed by the same type of brackets.
+Open brackets must be closed in the correct order.
+Every close bracket has a corresponding open bracket of the same type.
+P15.4 Implement Stack using Queues: Implement a Stack using two Queues.
+Hard:
+P15.5 Implement Queue using Stacks: Implement a Queue using two Stacks.
+P15.6 Next Greater Element I: The next greater element of some element x in an array is the first greater element to its right. You are given two distinct 0-indexed integer arrays nums1 and nums2, where nums1 is a subset of nums2. Find the next greater element for each element in nums1 in nums2.
+P15.7 Largest Rectangle in Histogram: Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.
+Video 16: Recursion and Backtracking
+This section introduces recursion as a powerful problem-solving technique where a function calls itself, and backtracking as an algorithmic paradigm that explores all possible solutions to a problem by systematically trying and building solutions incrementally.
+Core Concepts:
+Recursion:
+Base Case: The condition that stops the recursion.
+Recursive Step: The part where the function calls itself.
+Call Stack mechanism.
+Tail Recursion (brief mention and optimization).
+Backtracking:
+Exploring all possible paths/solutions.
+Making a choice, exploring consequences, then undoing the choice (backtracking).
+State space tree.
+Problems:
+Easy (Recursion Basics):
+P16.1 Print 'Hello' N Times: Write a recursive function to print "Hello" N times.
+P16.2 Print 1 to N Natural Numbers: Write a recursive function to print numbers from 1 to N.
+P16.3 Print N to 1 Natural Numbers: Write a recursive function to print numbers from N to 1.
+Medium (Recursion Applications):
+P16.4 Sum of N Natural Numbers (Recursive): Calculate the sum of the first N natural numbers recursively.
+P16.5 Factorial of N (Recursive): Calculate the factorial of N recursively.
+P16.6 Sum of Digits (Recursive): Calculate the sum of digits of a number recursively.
+P16.7 Fibonacci Series (Recursive & Iterative): Implement both recursive and iterative solutions for the Fibonacci series. Discuss their time complexities and trade-offs.
+Hard (Backtracking & Advanced Recursion):
+P16.8 Tower of Hanoi: Solve the classic Tower of Hanoi puzzle using recursion.
+P16.9 Josephus Problem: Solve the Josephus problem using recursion.
+P16.10 Generate Subsets: Given an integer array nums of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets.
+P16.11 Generate Permutations: Given an array nums of distinct integers, return all possible permutations. You can return the answer in any order.
+P16.12 Letter Combinations of a Phone Number: Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. (Mapping of digits to letters as on a telephone keypad).
+P16.13 Sudoku Solver: Write a program to solve a Sudoku puzzle by filling the empty cells.
+Video 17: Binary Tree
+This section introduces the Binary Tree, a fundamental hierarchical data structure, and explores its properties and various traversal methods.
+Core Concepts:
+Tree Terminology: Root, Node, Parent, Child, Sibling, Leaf, Edge, Path, Depth, Height, Subtree.
+Binary Tree properties (at most two children).
+Node structure and implementation.
+DFS Traversals:
+Inorder (Left-Root-Right): For BSTs, this yields sorted elements.
+Preorder (Root-Left-Right): Useful for creating a copy of the tree or for prefix expressions.
+Postorder (Left-Right-Root): Useful for deleting the tree or for postfix expressions.
+BFS Traversal (Level Order Traversal): Traversing level by level using a queue.
+Problems:
+Easy:
+P17.1 Implement Binary Tree: Design a TreeNode class and basic structure for a binary tree. Implement a simple function to insert nodes.
+P17.2 Maximum Depth of Binary Tree: Given the root of a binary tree, return its maximum depth. The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+Medium:
+P17.3 Symmetric Tree: Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+P17.4 BFS Traversal (Level Order): Implement the Level Order Traversal (BFS) of a binary tree. Return the node values level by level.
+P17.5 Left View of Binary Tree: Given a binary tree, print the left view of it. The left view of a binary tree is a set of all nodes that are visible when the tree is viewed from the left side.
+Hard:
+P17.6 Top View of Binary Tree: Given a binary tree, print the top view of it. The top view of a binary tree is the set of nodes visible when the tree is viewed from the top.
+P17.7 Lowest Common Ancestor (LCA) of a Binary Tree: Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+P17.8 Construct Binary Tree from Preorder and Inorder Traversal: Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.
+Video 18: Binary Search Tree (BST)
+This section focuses on the Binary Search Tree, a special type of binary tree that maintains a specific ordering property to enable efficient searching, insertion, and deletion operations.
+Core Concepts:
+BST Property: Left subtree contains values less than root, right subtree contains values greater than root.
+Advantages: Faster search than general binary trees.
+BST Operations: Insertion, Deletion, Search.
+Inorder traversal of a BST yields sorted elements.
+Problems:
+Easy:
+P18.1 Validate Binary Search Tree: Given the root of a binary tree, determine if it is a valid Binary Search Tree (BST).
+P18.2 Search in a Binary Search Tree: Given the root of a BST and an integer val, find the node in the BST that the node's value equals val and return the subtree rooted with that node. If such a node does not exist, return null.
+Medium:
+P18.3 Kth Smallest Element in a BST: Given the root of a Binary Search Tree and an integer k, return the k-th smallest value (1-indexed) of all the values in the tree.
+P18.4 Delete Node in a BST: Given the root of a BST and a key, delete the node with the given key from the BST. Return the root of the BST.
+Hard:
+P18.5 Inorder Successor in BST: Given a node in a Binary Search Tree, find the in-order successor of that node in the BST. Assume that each node has a parent pointer.
+P18.6 Convert Sorted Array to BST: Given an integer array nums where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.
+Video 19: Heaps (Priority Queues)
+This section introduces Heaps, a specialized tree-based data structure that satisfies the heap property, making them ideal for implementing Priority Queues.
+Core Concepts:
+Heap Property: Max-Heap (parent >= children) or Min-Heap (parent <= children).
+Binary Heap: Often implemented using an array.
+Heap Operations: insert(), deleteMax()/deleteMin(), peekMax()/peekMin(), heapify().
+Applications: Priority queues, Heap Sort, finding Kth largest/smallest elements.
+Problems:
+Easy:
+P19.1 Implement Min-Heap: Implement a Min-Heap data structure with insert and extractMin operations.
+P19.2 Kth Largest Element in an Array: Find the K-th largest element in an unsorted array. (Use a Min-Heap of size K).
+Medium:
+P19.3 Find Median from Data Stream: The median is the middle value in an ordered integer list. Implement MedianFinder class with addNum(num) and findMedian(). Use two heaps (one min-heap, one max-heap).
+P19.4 Top K Frequent Elements: Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+Hard:
+P19.5 Merge K Sorted Lists: You are given an array of K linked lists, each list is sorted in ascending order. Merge all the linked lists into one sorted linked list and return it. (Use a Min-Heap).
+P19.6 IPO: Suppose you are given n projects. For each project i, you have a capital[i] and a profit[i]. You also have an initial w capital. You want to maximize your final capital by choosing at most k distinct projects. (Use two heaps).
+Video 20: Tries (Prefix Trees)
+This section introduces Tries, a tree-like data structure used to store a dynamic set or associative array where the keys are strings. It's particularly efficient for operations involving prefixes.
+Core Concepts:
+Structure: Nodes representing characters, paths representing words.
+Efficiency for prefix searching, auto-completion, spell-checking.
+Trie Node implementation (children map, end-of-word flag).
+Operations: insert(word), search(word), startsWith(prefix).
+Problems:
+Easy:
+P20.1 Implement Trie (Prefix Tree): Implement the Trie class with insert, search, and startsWith methods.
+Medium:
+P20.2 Word Search II (using Trie): Given an m x n board of characters and a list of strings words, return all words on the board that can be formed by sequentially adjacent cells. The same letter cell may not be used more than once in a word. Optimize with a Trie.
+P20.3 Longest Common Prefix: Write a function to find the longest common prefix string amongst an array of strings. Use a Trie to efficiently solve this.
+Hard:
+P20.4 Implement Magic Dictionary: Implement a MagicDictionary class that supports buildDict(dictionary) and search(word) functions. The search function returns true if you can change exactly one character in word to match any word in the dictionary, otherwise returns false.
+P20.5 Auto-completion System: Design an auto-completion system. The system receives input from a user. For each character typed, the system suggests a list of up to 3 hot sentences.
+Video 21: Disjoint Set Union (DSU) / Union-Find
+This section introduces the Disjoint Set Union (DSU) data structure, also known as Union-Find, which is used to manage a collection of disjoint sets. It's highly efficient for determining connected components and solving connectivity problems.
+Core Concepts:
+Disjoint Sets: Sets with no common elements.
+find operation: Determines the representative (root) of the set containing an element.
+union operation: Merges two sets into a single set.
+Optimizations: Path Compression (during find) and Union by Rank/Size (during union) for near constant time complexity.
+Problems:
+Easy:
+P21.1 Implement Union-Find: Implement the UnionFind class with find(i) and union(i, j) methods, using path compression and union by rank/size.
+P21.2 Number of Connected Components in an Undirected Graph: Given n nodes labeled from 0 to n−1 and an array of edges where edges[i] = [ai, bi] indicates that there is an undirected edge between ai and bi, return the number of connected components in the graph.
+Medium:
+P21.3 Graph Valid Tree: Given n nodes labeled from 0 to n−1 and a list of edges (each is a pair of nodes), write a function to check whether these edges make up a valid tree.
+P21.4 Satisfiability of Equality Equations: You are given an array of strings equations that represent relationships between variables. Check if it's possible to assign integer values to the variables such that all equations are true.
+Hard:
+P21.5 Number of Islands II: A 2D grid is initially filled with water. We may perform an addLand operation, which turns a water cell into a land cell. Given a list of positions where the operations are performed, count the number of islands after each operation.
+P21.6 Smallest String With Swaps: You are given a string s, and an array of pairs of integers pairs where pairs[i] = [a, b] indicates that two characters at indices a and b may be swapped. Return the lexicographically smallest string that can be obtained after performing any number of swaps.
+Video 22: Segment Trees / Fenwick Trees (BIT)
+This section introduces Segment Trees and Fenwick Trees (Binary Indexed Trees), powerful data structures used for efficiently handling range queries and point updates on an array.
+Core Concepts:
+Segment Tree: A tree-based data structure used for storing information about intervals or segments. Allows for efficient querying (e.g., sum, min, max) over ranges and updating individual elements.
+Fenwick Tree (BIT): A simpler, more space-efficient data structure than Segment Trees, primarily used for prefix sum queries and single element updates.
+Building the tree, range query, and point update operations for both.
+Problems:
+Easy:
+P22.1 Range Sum Query - Immutable (using Segment Tree): Implement a NumArray class that supports sumRange(left, right) operation on an array nums.
+P22.2 Range Sum Query - Mutable (using BIT): Implement a NumArray class that supports sumRange(left, right) and update(index, val) operations.
+Medium:
+P22.3 Count of Smaller Numbers After Self (using BIT/Segment Tree): Given an integer array nums, return an integer array counts where counts[i] is the number of elements to the right of nums[i] that are smaller than nums[i].
+P22.4 Range Minimum Query: Given an array, find the minimum element in a given range efficiently.
+Hard:
+P22.5 Reverse Pairs: Given an integer array nums, return the number of "reverse pairs" in the array. A reverse pair is a pair (i,j) where 0≤i<j<nums.length and nums[i] > 2 * nums[j]. (Can be solved with Merge Sort modification + BIT/Segment Tree).
+P22.6 Query Kth Smallest Element in a Range: Given an array and multiple queries, each query consists of a range [L, R] and an integer K. For each query, find the Kth smallest element in the subarray arr[L...R].
+Video 23: Graphs
+This final section covers Graph data structures, which are used to model relationships between entities, and introduces common graph algorithms for traversal, pathfinding, and connectivity analysis.
+Core Concepts:
+Graph Terminology: Vertices (Nodes), Edges, Directed/Undirected, Weighted/Unweighted, Cyclic/Acyclic.
+Graph Representations: Adjacency Matrix, Adjacency List.
+Graph Traversal:
+Breadth-First Search (BFS): Explores neighbors level by level (uses a Queue).
+Depth-First Search (DFS): Explores as far as possible along each branch before backtracking (uses a Stack or Recursion).
+Problems:
+Easy:
+P23.1 Implement Graph: Implement a basic graph using an adjacency list. Include methods to addVertex, addEdge.
+P23.2 BFS Traversal: Given a graph, perform a Breadth-First Search (BFS) starting from a given source node and print the traversal order.
+P23.3 DFS Traversal: Given a graph, perform a Depth-First Search (DFS) starting from a given source node and print the traversal order.
+Medium:
+P23.4 Cycle Detection (Undirected Graph): Given an undirected graph, determine if it contains a cycle.
+P23.5 Topological Sort: Given a Directed Acyclic Graph (DAG), return a topological sorting of its vertices.
+P23.6 Number of Islands: Given an m x n 2D binary grid which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically.
+Hard:
+P23.7 Shortest Path - Dijkstra's Algorithm: Implement Dijkstra's algorithm to find the shortest path from a single source vertex to all other vertices in a graph with non-negative edge weights.
+P23.8 Shortest Path - Bellman-Ford Algorithm: Implement Bellman-Ford algorithm to find the shortest path from a single source vertex to all other vertices in a graph that may contain negative edge weights (and detect negative cycles).
+P23.9 Minimum Spanning Tree (Prim's or Kruskal's): Implement either Prim's algorithm or Kruskal's algorithm to find the Minimum Spanning Tree (MST) of a connected, undirected graph.
+P23.10 All-Pairs Shortest Path - Floyd-Warshall Algorithm: Implement the Floyd-Warshall algorithm to find the shortest paths between all pairs of vertices in a weighted graph.
+Video 24: Algorithm Design Paradigms & Analysis
+This concluding video consolidates knowledge by explicitly discussing common algorithmic design paradigms and the critical skill of analyzing algorithm efficiency.
+Core Concepts:
+Time Complexity Analysis (Big O Notation):
+Understanding O(1), O(logN), O(N), O(NlogN), O(N2), O(2N), O(N!).
+Analyzing loops, nested loops, recursive calls.
+Best, Average, and Worst-case complexities.
+Amortized Analysis (briefly, e.g., for dynamic array resizing).
+Space Complexity Analysis:
+Auxiliary space vs. total space.
+Analyzing space used by data structures and call stacks.
+Algorithmic Paradigms (Review & Deeper Dive):
+Greedy Algorithms: Making locally optimal choices in the hope of finding a global optimum. (e.g., Activity Selection Problem, Fractional Knapsack).
+Dynamic Programming (DP):
+Memoization (Top-down DP): Storing results of expensive function calls and returning the cached result when the same inputs occur again.
+Tabulation (Bottom-up DP): Solving subproblems first and building up to the solution.
+Identifying overlapping subproblems and optimal substructure.
+Common DP problem types: Knapsack (0/1 and unbounded), Longest Common Subsequence (LCS), Longest Increasing Subsequence (LIS), Coin Change (ways/min coins), Edit Distance.
+Divide and Conquer: Breaking down a problem into smaller subproblems of the same type, solving them independently, and combining their results (e.g., Merge Sort, Quick Sort, calculating powers).
+Backtracking (Revisited): Systematic search for a solution by trying to extend a partial solution, and abandoning it if it cannot be extended to a valid solution.
+Problems:
+Easy:
+P24.1 Analyze Time/Space Complexity (Simple Functions): Given simple functions (e.g., summing array elements, searching a number in a loop), identify their time and space complexity in Big O notation.
+P24.2 Climbing Stairs (DP Introduction): You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top? (Solve with simple recursion, then memoization).
+Medium:
+P24.3 Coin Change (Minimum Coins - DP): Given an array of integers coins representing coin denominations and an integer amount representing a total amount of money, return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.
+P24.4 Longest Common Subsequence (DP): Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.
+Hard:
+P24.5 0/1 Knapsack Problem (DP): Given a set of items, each with a weight and a value, and a knapsack with a maximum capacity, determine the items to include in the knapsack so that the total weight is less than or equal to the capacity and the total value is as large as possible.
+P24.6 Edit Distance (DP): Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2. You have the following three operations permitted on a word: insert a character, delete a character, replace a character.
+P24.7 N-Queens Problem (Backtracking): The N-Queens puzzle is the problem of placing N queens on an N×N chessboard such that no two queens attack each other. Return all distinct solutions.
+`;
+
+        // Function to parse the raw text content into a structured array of objects
+        const parseContent = (text) => {
+          const videos = text.split(/Video \d{2}:/);
+          const parsedData = [];
+
+          const introTextMatch = text.match(/^(.*?)(?=Video 01:)/s);
+          if (introTextMatch && introTextMatch[1].trim()) {
+            parsedData.push({
+              id: "overview", // Changed ID to match example design's overview section
+              title: "Curriculum Overview", // Changed title to match example design
+              description: introTextMatch[1].trim(),
+              type: "intro",
+            });
+          }
+
+          videos.forEach((videoBlock, index) => {
+            if (index === 0) return;
+
+            const lines = videoBlock.trim().split("\n");
+            const title = `Video ${String(index).padStart(
+              2,
+              "0"
+            )}: ${lines[0].trim()}`;
+            const videoId = `video${String(index).padStart(2, "0")}`; // Changed ID format
+
+            let currentDescriptionLines = [];
+            let coreConcepts = [];
+            let problems = [];
+            let currentSection = "description";
+
+            let problemDifficulty = "";
+
+            for (let i = 1; i < lines.length; i++) {
+              const line = lines[i].trim();
+
+              if (line.startsWith("Core Concepts:")) {
+                currentSection = "coreConcepts";
+                continue;
+              } else if (line.startsWith("Problems:")) {
+                currentSection = "problems";
+                continue;
+              } else if (line.startsWith("Easy:")) {
+                problemDifficulty = "Easy";
+                continue;
+              } else if (line.startsWith("Medium:")) {
+                problemDifficulty = "Medium";
+                continue;
+              } else if (line.startsWith("Hard:")) {
+                problemDifficulty = "Hard";
+                continue;
+              }
+
+              if (currentSection === "coreConcepts") {
+                if (line) {
+                  coreConcepts.push(line);
+                }
+              } else if (currentSection === "problems") {
+                if (line.match(/^P\d+\.\d+\s/)) {
+                  const problemId = line
+                    .split(" ")[0]
+                    .toLowerCase()
+                    .replace(".", "-");
+                  problems.push({
+                    id: problemId,
+                    difficulty: problemDifficulty,
+                    description: line,
+                  });
+                }
+              } else {
+                currentDescriptionLines.push(line);
+              }
+            }
+
+            parsedData.push({
+              id: videoId,
+              title,
+              description: currentDescriptionLines.join("\n").trim(),
+              coreConcepts,
+              problems,
+              type: "video",
+            });
+          });
+          return parsedData;
+        };
+
+        const courseContent = parseContent(rawContent);
+        const sidebarNav = document.getElementById("sidebarNav");
+        const mainContentArea = document.querySelector("main");
+
+        // Dynamically generate sidebar navigation
+        const sidebarLinksData = [
+          { id: "overview", text: "Curriculum Overview" },
+          { id: "video01", text: "Video 01: Basic Logic" },
+          { id: "video02", text: "Video 02: Conditionals" },
+          { id: "video03", text: "Video 03: Loops" },
+          { id: "video04", text: "Video 04: Patterns" },
+          { id: "video05", text: "Video 05: Array" },
+          { id: "video06", text: "Video 06: String" },
+          { id: "video07", text: "Video 07: OOP" },
+          {
+            id: "game_begins_nav_placeholder",
+            text: "Advanced Topics",
+            isSeparator: true,
+          },
+          { id: "video08", text: "Video 08: Adv. Array" },
+          { id: "video09", text: "Video 09: Sorting Pt.1" },
+          { id: "video10", text: "Video 10: Sorting Pt.2" },
+          { id: "video11", text: "Video 11: Cyclic Sort" },
+          { id: "video12", text: "Video 12: Binary Search" }, // Updated ID to match parsed data
+          { id: "video13", text: "Video 13: Hashing" }, // Updated ID
+          { id: "video14", text: "Video 14: Linked List" }, // Updated ID
+          { id: "video15", text: "Video 15: Queue & Stack" }, // Updated ID
+          { id: "video16", text: "Video 16: Recursion & Backtracking" }, // Updated ID
+          { id: "video17", text: "Video 17: Binary Tree" }, // Updated ID
+          { id: "video18", text: "Video 18: BST" }, // Updated ID
+          { id: "video19", text: "Video 19: Heaps" }, // Updated ID
+          { id: "video20", text: "Video 20: Tries" }, // Updated ID
+          { id: "video21", text: "Video 21: DSU / Union-Find" }, // Updated ID
+          { id: "video22", text: "Video 22: Segment Trees / BIT" }, // Updated ID
+          { id: "video23", text: "Video 23: Graphs" }, // Updated ID
+          { id: "video24", text: "Video 24: Algorithm Paradigms & Analysis" }, // Updated ID
+        ];
+
+        sidebarLinksData.forEach((linkData) => {
+          const link = document.createElement("a");
+          link.href = `#${linkData.id}`;
+          link.classList.add(
+            "block",
+            "p-3",
+            "rounded-md",
+            "text-stone-700",
+            "sidebar-link"
+          );
+
+          if (linkData.isSeparator) {
+            link.classList.add(
+              "font-semibold",
+              "text-emerald-700",
+              "mt-2",
+              "border-t",
+              "border-stone-300",
+              "pt-3"
+            );
+            link.textContent = linkData.text;
+            link.removeAttribute("href"); // Remove href for separator
+          } else {
+            link.classList.add("font-medium");
+            link.textContent = linkData.text;
+          }
+          sidebarNav.appendChild(link);
+        });
+
+        // Dynamically generate main content sections
+        const gameBeginsSection = document.getElementById(
+          "game_begins_section"
+        );
+        const mainContentSectionsContainer = mainContentArea; // Main element is the container
+
+        courseContent.forEach((item) => {
+          if (item.id === "overview") {
+            // Overview section is already in HTML, just update its description
+            const overviewDesc = document.querySelector(
+              "#overview p:first-of-type"
+            );
+            if (overviewDesc) {
+              overviewDesc.textContent = item.description;
+            }
+            return; // Skip creating new section for overview
+          }
+
+          // Insert the "Game Begins" separator before Video 08
+          if (item.id === "video08") {
+            mainContentSectionsContainer.insertBefore(
+              gameBeginsSection,
+              document.getElementById("video08")
+            );
+            gameBeginsSection.classList.remove("active"); // Ensure it's hidden initially
+          }
+
+          const section = document.createElement("section");
+          section.id = item.id;
+          section.classList.add("content-section");
+
+          const h2 = document.createElement("h2");
+          h2.textContent = item.title;
+          section.appendChild(h2);
+
+          if (item.description) {
+            const p = document.createElement("p");
+            p.textContent = item.description;
+            section.appendChild(p);
+          }
+
+          if (item.coreConcepts && item.coreConcepts.length > 0) {
+            const h3Concepts = document.createElement("h3");
+            h3Concepts.textContent = "Core Concepts:";
+            section.appendChild(h3Concepts);
+            const ulConcepts = document.createElement("ul");
+            item.coreConcepts.forEach((concept) => {
+              const li = document.createElement("li");
+              li.textContent = concept;
+              ulConcepts.appendChild(li);
+            });
+            section.appendChild(ulConcepts);
+          }
+
+          if (item.problems && item.problems.length > 0) {
+            const h3Problems = document.createElement("h3");
+            h3Problems.textContent = "Problems:";
+            section.appendChild(h3Problems);
+            const ulProblems = document.createElement("ul");
+            item.problems.forEach((problem) => {
+              const li = document.createElement("li");
+              const strong = document.createElement("strong");
+              strong.textContent = `${problem.difficulty}: `;
+              li.appendChild(strong);
+              li.append(problem.description);
+              ulProblems.appendChild(li);
+            });
+            section.appendChild(ulProblems);
+          }
+          mainContentSectionsContainer.appendChild(section);
+        });
+
+        const allContentSections =
+          document.querySelectorAll(".content-section");
+        const allNavLinks = document.querySelectorAll("#sidebarNav a");
+
+        function updateContent(hash) {
+          allContentSections.forEach((section) =>
+            section.classList.remove("active")
+          );
+          allNavLinks.forEach((link) => link.classList.remove("active"));
+          gameBeginsSection.classList.remove("active"); // Hide separator by default
+
+          let targetSectionId = hash ? hash.substring(1) : "overview";
+          if (targetSectionId === "game_begins_nav_placeholder") {
+            targetSectionId = "video08"; // Default to first advanced topic
+          }
+
+          const targetSection = document.getElementById(targetSectionId);
+          const targetLink = document.querySelector(
+            `#sidebarNav a[href="#${targetSectionId}"]`
+          );
+
+          if (targetSection) {
+            targetSection.classList.add("active");
+            // Show "game begins" separator if an advanced topic is selected
+            const advancedTopicPrefixes = [
+              "video08",
+              "video09",
+              "video10",
+              "video11",
+              "video12",
+              "video13",
+              "video14",
+              "video15",
+              "video16",
+              "video17",
+              "video18",
+              "video19",
+              "video20",
+              "video21",
+              "video22",
+              "video23",
+              "video24",
+            ];
+            if (
+              advancedTopicPrefixes.some((prefix) =>
+                targetSectionId.startsWith(prefix)
+              )
+            ) {
+              gameBeginsSection.classList.add("active");
+            }
+          } else {
+            document.getElementById("overview").classList.add("active"); // Fallback to overview
+          }
+
+          if (targetLink) {
+            targetLink.classList.add("active");
+          } else if (targetSectionId === "overview") {
+            document
+              .querySelector(`#sidebarNav a[href="#overview"]`)
+              .classList.add("active");
+          }
+          window.scrollTo(0, 0); // Scroll to top of page
+        }
+
+        allNavLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            const href = this.getAttribute("href");
+            if (
+              href &&
+              href.startsWith("#") &&
+              href !== "#game_begins_nav_placeholder"
+            ) {
+              e.preventDefault();
+              history.pushState(null, null, href);
+              updateContent(href);
+            } else if (href === "#game_begins_nav_placeholder") {
+              e.preventDefault();
+              const firstAdvancedTopic = "#video08";
+              history.pushState(null, null, firstAdvancedTopic);
+              updateContent(firstAdvancedTopic);
+            }
+          });
+        });
+
+        window.addEventListener("popstate", function () {
+          updateContent(window.location.hash);
+        });
+
+        // Initial content update based on URL hash or default to overview
+        updateContent(window.location.hash || "#overview");
+
+        // Chart.js data and configuration
+        const chartLabels = [];
+        const chartDataValues = [];
+
+        // Populate chart data from parsed content (excluding 'overview' itself)
+        courseContent.forEach((item) => {
+          if (item.type === "video") {
+            chartLabels.push(
+              item.title.replace("Video ", "V").split(":")[0] +
+                ": " +
+                item.title.split(":")[1].trim()
+            );
+            chartDataValues.push(
+              item.coreConcepts.length + item.problems.length
+            );
+          }
+        });
+
+        const ctx = document.getElementById("curriculumChart").getContext("2d");
+        const curriculumData = {
+          labels: chartLabels,
+          datasets: [
+            {
+              label: "Number of Key Items (Concepts/Problems)",
+              data: chartDataValues,
+              backgroundColor: [
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(75, 192, 192, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(153, 102, 255, 0.7)",
+                "rgba(255, 159, 64, 0.7)",
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(201, 203, 207, 0.7)",
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(75, 192, 192, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(153, 102, 255, 0.7)",
+                "rgba(255, 159, 64, 0.7)",
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(201, 203, 207, 0.7)",
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(75, 192, 192, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(153, 102, 255, 0.7)",
+                "rgba(255, 159, 64, 0.7)",
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(201, 203, 207, 0.7)",
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(75, 192, 192, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+              ],
+              borderColor: [
+                "rgba(54, 162, 235, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 159, 64, 1)",
+                "rgba(255, 99, 132, 1)",
+                "rgba(201, 203, 207, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 159, 64, 1)",
+                "rgba(255, 99, 132, 1)",
+                "rgba(201, 203, 207, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 159, 64, 1)",
+                "rgba(255, 99, 132, 1)",
+                "rgba(201, 203, 207, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 206, 86, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        };
+        new Chart(ctx, {
+          type: "bar",
+          data: curriculumData,
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                beginAtZero: true,
+                title: { display: true, text: "Number of Key Items" },
+              },
+              y: {
+                ticks: { autoSkip: false },
+              },
+            },
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Curriculum Content Distribution",
+                font: { size: 18 },
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    if (context.parsed.x !== null) {
+                      label += context.parsed.x;
+                    }
+                    return label;
+                  },
+                },
+              },
+            },
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

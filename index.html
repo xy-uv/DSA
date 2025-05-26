@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive DSA Curriculum with JavaScript</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Visualization & Content Choices: 
+        - Curriculum Overview: Goal: Inform about topic distribution. Viz: Horizontal Bar Chart (Chart.js). Interaction: Hover for counts. Justification: Provides a quick visual summary of curriculum structure.
+        - Topic Sections (Video 01-Graph): Goal: Present curriculum details. Presentation: Headings, lists, text blocks for questions, concepts, and formulas (formulas as text). Interaction: Navigation via sidebar. Justification: Clear, structured presentation of detailed content, mirroring source but with better navigation.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-link { transition: all 0.2s ease-in-out; }
+        .sidebar-link:hover, .sidebar-link.active { background-color: #0284c7; color: white; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Adjusted for better display of more categories */
+            margin-left: auto;
+            margin-right: auto;
+            height: 500px; /* Adjusted for more categories */
+            max-height: 600px; /* Adjusted for more categories */
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 600px; /* Adjusted for more categories */
+            }
+        }
+        /* Ensure Inter font is loaded if not available system-wide */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .prose-custom ul { list-style-type: disc; margin-left: 1.5rem; }
+        .prose-custom ul ul { list-style-type: circle; margin-left: 1.5rem; }
+        .prose-custom h2 { font-size: 1.75rem; margin-bottom: 0.75rem; margin-top: 1.5rem; font-weight: 600; }
+        .prose-custom h3 { font-size: 1.35rem; margin-bottom: 0.5rem; margin-top: 1.25rem; font-weight: 600; }
+        .prose-custom p { margin-bottom: 0.75rem; line-height: 1.6; }
+        .formula { font-family: 'Courier New', Courier, monospace; background-color: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+        .game-begins-separator {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #059669; /* Emerald */
+            padding: 2rem 0;
+            border-top: 2px solid #d1d5db;
+            border-bottom: 2px solid #d1d5db;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-stone-800">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-72 bg-stone-200 p-6 space-y-2 shadow-lg md:sticky md:top-0 md:h-screen md:overflow-y-auto">
+            <h1 class="text-2xl font-bold text-sky-700 mb-6 border-b-2 border-sky-300 pb-2">DSA with JS</h1>
+            <nav id="sidebarNav">
+                <a href="#overview" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Curriculum Overview</a>
+                <a href="#video01" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 01: Basic Logic</a>
+                <a href="#video02" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 02: Conditionals</a>
+                <a href="#video03" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 03: Loops</a>
+                <a href="#video04" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 04: Patterns</a>
+                <a href="#video05" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 05: Array</a>
+                <a href="#video06" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 06: String</a>
+                <a href="#video07" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 07: OOP</a>
+                <a href="#game_begins_nav_placeholder" class="block font-semibold p-3 text-emerald-700 mt-2 border-t border-stone-300 pt-3">Advanced Topics</a>
+                <a href="#video08" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 08: Adv. Array</a>
+                <a href="#video09" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 09: Sorting Pt.1</a>
+                <a href="#video10" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 10: Sorting Pt.2</a>
+                <a href="#video11" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Video 11: Cyclic Sort</a>
+                <a href="#binary_search" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Binary Search</a>
+                <a href="#hashing" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Hashing</a>
+                <a href="#linked_list" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Linked List</a>
+                <a href="#queue_stack" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Queue & Stack</a>
+                <a href="#recursion_backtracking" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Recursion & Backtracking</a>
+                <a href="#binary_tree" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Binary Tree</a>
+                <a href="#bst" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">BST</a>
+                <a href="#graph" class="block sidebar-link font-medium p-3 rounded-md text-stone-700">Graph</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-10 prose-custom max-w-none">
+            <section id="overview" class="content-section active">
+                <h2 class="text-3xl font-bold text-sky-700 mb-6">Welcome to the Interactive DSA Curriculum!</h2>
+                <p class="text-lg mb-4">This interactive guide provides a structured path to learning Data Structures and Algorithms (DSA) using JavaScript. The curriculum is broken down into "Video" topics, mirroring a course structure. Use the sidebar to navigate through different modules.</p>
+                <p class="text-lg mb-8">Below is a chart showing the distribution of key learning items (questions and core concepts) across the major topics in this curriculum. This can help you visualize the scope of each section.</p>
+                <div class="chart-container bg-white p-4 rounded-lg shadow-md">
+                    <canvas id="curriculumChart"></canvas>
+                </div>
+            </section>
+
+            <section id="video01" class="content-section">
+                <h2>Video 01: Basic Logic in JS</h2>
+                <p>This introductory module lays the groundwork by focusing on the fundamental building blocks of JavaScript programming, including variables, operators, and basic mathematical operations.</p>
+                <ul>
+                    <li><strong>Q1. Sum of two integer.</strong>
+                        <ul><li>Understanding how to perform basic arithmetic addition. Example: <span class="formula">num1 + num2</span></li></ul>
+                    </li>
+                    <li><strong>Q2. Relation between integer & string.</strong> (Source: ". Relation...")
+                        <ul><li>Exploring JavaScript's type coercion and how strings and numbers interact, especially with the `+` operator. Example: <span class="formula">5 + "hello"</span> (concatenation) vs. <span class="formula">5 + parseInt("10")</span> (numeric addition).</li></ul>
+                    </li>
+                    <li><strong>Q3. sum and message.</strong>
+                        <ul><li>Combining numerical results with textual output for user-friendly messages. Example: <span class="formula">console.log("The sum is: " + (num1 + num2))</span></li></ul>
+                    </li>
+                    <li><strong>Q3. Accept and print the answer.</strong> (Second Q3 in source)
+                        <ul><li>Learning to take input from the user (e.g., via `prompt()`) and display results (e.g., via `alert()` or console).</li></ul>
+                    </li>
+                    <li><strong>Q4. Swap two variables by three methods.</strong>
+                        <ul><li>Investigating different techniques for exchanging the values of two variables, such as using a temporary variable, arithmetic operations, or ES6 destructuring.</li></ul>
+                    </li>
+                </ul>
+                <h3>Operators and their questions</h3>
+                <p>A detailed exploration of various JavaScript operators: arithmetic, assignment, comparison, logical, and bitwise operators, along with practical questions to solidify understanding.</p>
+                <h3>Math functions</h3>
+                <p>Introduction to the built-in JavaScript `Math` object, providing access to common mathematical constants (like `Math.PI`) and functions (like `Math.sqrt()`, `Math.pow()`, `Math.random()`).</p>
+                <h3>Math problems:</h3>
+                <ul>
+                    <li><strong>Q5. calculate area and perimeter of rectangle.</strong>
+                        <ul>
+                            <li>Applying formulas: Area = <span class="formula">length * width</span>, Perimeter = <span class="formula">2 * (length + width)</span>.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Q6. Area of triangle by heron's formula.</strong>
+                        <ul>
+                            <li>Implementing Heron's formula: For a triangle with sides a, b, c, and semi-perimeter s = (a+b+c)/2, Area = <span class="formula">sqrt(s*(s-a)*(s-b)*(s-c))</span>.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Q7. Circumference of circle.</strong>
+                        <ul>
+                            <li>Calculating circumference: Circumference = <span class="formula">2 * &pi; * r</span> (or <span class="formula">2 * Math.PI * radius</span>).</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="video02" class="content-section">
+                <h2>Video 02: Conditional Statement</h2>
+                <p>This module introduces control flow mechanisms using conditional statements, allowing your programs to make decisions and execute different blocks of code based on specific conditions.</p>
+                <ul>
+                    <li><strong>Q8. Valid user.</strong>
+                        <ul><li>Implementing logic to check user credentials or permissions, often involving `if-else` statements.</li></ul>
+                    </li>
+                    <li><strong>Q9. Shop discount.</strong>
+                        <ul><li>Applying discounts based on criteria like purchase amount or customer type, demonstrating practical use of conditional logic.</li></ul>
+                    </li>
+                    <li><strong>Q10. Electricity Bill.</strong>
+                        <ul><li>Calculating electricity bills based on tiered consumption rates, requiring multiple conditional checks.</li></ul>
+                    </li>
+                    <li><strong>Q11. BDT/INR Denomination.</strong>
+                        <ul><li>Breaking down a currency amount into the minimum number of notes/coins, often using a series of conditional checks or loops with division/modulo.</li></ul>
+                    </li>
+                </ul>
+                <h3>Ternary operator, switch and one case handling multiple values</h3>
+                <p>Exploring alternative conditional structures:</p>
+                <ul>
+                    <li><strong>Ternary operator:</strong> A concise way to write simple `if-else` statements. Example: <span class="formula">condition ? valueIfTrue : valueIfFalse</span>.</li>
+                    <li><strong>Switch statement:</strong> Handling multiple possible values for a single expression efficiently. Includes understanding `case`, `break`, and `default`.</li>
+                    <li><strong>One case handling multiple values:</strong> Using fall-through in `switch` statements (by omitting `break`) to execute the same code block for multiple cases.</li>
+                </ul>
+            </section>
+
+            <section id="video03" class="content-section">
+                <h2>Video 03: Loop</h2>
+                <p>This module covers different types of loops (`for`, `while`, `do-while`), which are essential for performing repetitive tasks and iterating over collections of data.</p>
+                
+                <h3>Loop</h3>
+                <p>General introduction to the concept of loops and their importance in programming for automation and repetition.</p>
+
+                <h3>for Loop</h3>
+                <p>Focuses on the `for` loop, a common structure for iterating a specific number of times or over array elements.</p>
+                <ul>
+                    <li><strong>Q12. Print n numbers of 'hello worlds'.</strong>
+                        <ul><li>Basic `for` loop usage for repeating an action `n` times.</li></ul>
+                    </li>
+                    <li><strong>Q13. One to n numbers and vice versa.</strong>
+                        <ul><li>Using `for` loops to print sequences in ascending (1 to n) and descending (n to 1) order.</li></ul>
+                    </li>
+                    <li><strong>Q14. Sum of n natural numbers and factorial of number.</strong>
+                        <ul>
+                            <li>Calculating sum: <span class="formula">&Sigma;i (from i=1 to n) = n*(n+1)/2</span> (can be done with a loop or formula).</li>
+                            <li>Calculating factorial: <span class="formula">n! = n * (n-1) * ... * 1</span> (typically using a loop).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Q15. Factors of number.</strong>
+                        <ul><li>Finding all divisors of a given number by iterating up to the number (or its square root for optimization).</li></ul>
+                    </li>
+                    <li><strong>Q16. Prime numbers.</strong>
+                        <ul><li>Determining if a number is prime by checking for factors, and finding primes within a range.</li></ul>
+                    </li>
+                </ul>
+
+                <h3>while Loop</h3>
+                <p>Explores the `while` loop, which continues as long as a specified condition is true. Useful when the number of iterations is not known beforehand.</p>
+                <ul>
+                    <li><strong>Q17. Sum of digits.</strong>
+                        <ul><li>Calculating the sum of individual digits of a number, often using modulo and division operations within a `while` loop.</li></ul>
+                    </li>
+                    <li><strong>Q18. Reverse of number.</strong>
+                        <ul><li>Reversing the order of digits in a number.</li></ul>
+                    </li>
+                    <li><strong>Q19. strong number.</strong>
+                        <ul><li>Identifying strong numbers (sum of factorials of digits equals the number itself). This combines loops and factorial calculation.</li></ul>
+                    </li>
+                </ul>
+
+                <h3>do-while Loop</h3>
+                <p>Covers the `do-while` loop, which is similar to `while` but guarantees the loop body executes at least once before checking the condition.</p>
+                <ul>
+                    <li><strong>Q20. Repeat hello.</strong>
+                        <ul><li>A simple demonstration of `do-while` loop's guaranteed first execution.</li></ul>
+                    </li>
+                    <li><strong>Q21. dummy/sastra calculator.</strong>
+                        <ul><li>Creating a simple menu-driven calculator that continues operations until the user chooses to exit, a good use case for `do-while`.</li></ul>
+                    </li>
+                    <li><strong>Q22. Guess the number.</strong>
+                        <ul><li>Implementing a number guessing game where the user repeatedly guesses until they find the correct number.</li></ul>
+                    </li>
+                </ul>
+            </section>
+            
+            <section id="video04" class="content-section">
+                <h2>Video 04: Pattern Programming</h2>
+                <p>This module explores the creative use of nested loops to generate various textual and numerical patterns (e.g., stars, numbers arranged in specific shapes). It's excellent practice for mastering loop control and logic.</p>
+                <h3>Nested Loop</h3>
+                <p>Understanding how loops within loops (nested loops) work. The outer loop controls rows, and the inner loop typically controls columns or elements within each row for pattern generation.</p>
+                <h3>Pattern Questions</h3>
+                <p>A variety of problems involving printing different kinds of patterns, such as:
+                    <ul>
+                        <li>Right-angled triangles (stars, numbers)</li>
+                        <li>Inverted triangles</li>
+                        <li>Pyramids</li>
+                        <li>Diamonds</li>
+                        <li>Hollow patterns</li>
+                    </ul>
+                These questions help build strong logical thinking and control over loop structures.
+                </p>
+            </section>
+
+            <section id="video05" class="content-section">
+                <h2>Video 05: Array</h2>
+                <p>This module introduces Arrays, a fundamental linear data structure used for storing an ordered collection of elements. JavaScript arrays are dynamic and can hold elements of mixed types.</p>
+                <h3>Array</h3>
+                <p>A general overview of what arrays are, their purpose (storing multiple values in a single variable), and basic terminology (elements, index).</p>
+                <h3>Introduction</h3>
+                <p>More detailed introduction to arrays in JavaScript, including how to declare and initialize them.</p>
+                <h3>Fixed and Dynamic size Array</h3>
+                <p>Discussing the nature of arrays in JavaScript, which are dynamically sized (can grow or shrink) unlike fixed-size arrays in some other languages.</p>
+                <h3>accept value from user and assign in the Array</h3>
+                <p>Techniques for populating arrays with data provided by the user, often involving loops and input methods.</p>
+                <ul>
+                    <li><strong>Q23. sum of Array's element.</strong>
+                        <ul><li>Calculating the total sum of all numerical elements within an array, typically using a loop to iterate through elements.</li></ul>
+                    </li>
+                    <li><strong>Q24. max element from Array.</strong>
+                        <ul><li>Finding the largest element present in an array by iterating and comparing elements.</li></ul>
+                    </li>
+                    <li><strong>Q25. second max element from Array.</strong>
+                        <ul><li>Identifying the second largest element, which requires careful comparison and tracking of both the largest and second largest values.</li></ul>
+                    </li>
+                    <li><strong>Q26. reverse the Array.</strong>
+                        <ul><li>Reversing the order of elements within an array, either by creating a new reversed array or by swapping elements in-place.</li></ul>
+                    </li>
+                    <li><strong>Q27. All zeroes to left and all ones to right.</strong>
+                        <ul><li>Reordering array elements (typically 0s and 1s) such that all zeros are grouped to the left and all ones to the right, often using a two-pointer approach.</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="video06" class="content-section">
+                <h2>Video 06: String</h2>
+                <p>This module covers Strings, which are sequences of characters. It explores JavaScript's built-in string properties and methods for manipulation and analysis.</p>
+                <h3>Introduction of string</h3>
+                <p>Defining strings in JavaScript, their immutable nature (meaning string methods return new strings rather than modifying the original), and how they are created (literals, `String` constructor).</p>
+                <h3>Methods of string</h3>
+                <p>Exploring a variety of commonly used built-in string methods, such as:
+                    <ul>
+                        <li><span class="formula">length</span> property</li>
+                        <li><span class="formula">charAt(index)</span>, <span class="formula">charCodeAt(index)</span></li>
+                        <li><span class="formula">substring(startIndex, endIndex)</span>, <span class="formula">slice(startIndex, endIndex)</span></li>
+                        <li><span class="formula">indexOf(searchValue)</span>, <span class="formula">lastIndexOf(searchValue)</span></li>
+                        <li><span class="formula">toUpperCase()</span>, <span class="formula">toLowerCase()</span></li>
+                        <li><span class="formula">trim()</span>, <span class="formula">split(separator)</span>, <span class="formula">join(separator)</span> (for arrays of strings)</li>
+                        <li><span class="formula">replace(searchValue, newValue)</span>, <span class="formula">includes(searchValue)</span></li>
+                    </ul>
+                </p>
+                <ul>
+                    <li><strong>Q28. print each character on new line.</strong>
+                        <ul><li>Iterating through a string (e.g., using a `for` loop or `for...of`) and printing each character on a separate line.</li></ul>
+                    </li>
+                    <li><strong>Q29. print in reverse order.</strong>
+                        <ul><li>Reversing a string character by character and printing the result.</li></ul>
+                    </li>
+                    <li><strong>Q30. check if string is pallindrom or not.</strong>
+                        <ul><li>Determining if a string reads the same forwards and backward (e.g., "madam", "level"). This often involves comparing the string with its reversed version.</li></ul>
+                    </li>
+                    <li><strong>Q31. Toggle each character.</strong>
+                        <ul><li>Changing the case of each character in a string (e.g., lowercase to uppercase, and uppercase to lowercase).</li></ul>
+                    </li>
+                    <li><strong>Q32. Frequency of each character.</strong>
+                        <ul><li>Counting the occurrences of each unique character within a string, often using an object (hash map) to store frequencies.</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="video07" class="content-section">
+                <h2>Video 07: OOP (class and object)</h2>
+                <p>This module introduces the core concepts of Object-Oriented Programming (OOP) in JavaScript, focusing on classes (introduced in ES6) and objects, which are fundamental to building more complex and organized applications.</p>
+                <h3>class and object</h3>
+                <p>Understanding how classes serve as blueprints for creating objects. Objects are instances of classes, encapsulating data (properties) and behavior (methods).</p>
+                <h3>constructor</h3>
+                <p>Learning about the special `constructor` method within a class, which is automatically called when a new object is created (instantiated) and is used for initializing the object's properties.</p>
+                <h3>prototype object</h3>
+                <p>Exploring JavaScript's unique prototype-based inheritance model. Understanding that objects inherit properties and methods from their prototype. While ES6 classes provide syntactic sugar, prototypes are still at the core.</p>
+                <h3>this keyword</h3>
+                <p>Gaining a clear understanding of the `this` keyword's context and how its value is determined in different JavaScript scenarios (e.g., within object methods, constructors, event handlers, arrow functions).</p>
+                <h3>design problems</h3>
+                <p>Applying OOP principles (encapsulation, inheritance, polymorphism - though JavaScript's take is unique) to solve practical software design challenges. This involves thinking about how to model real-world entities or system components as objects and classes for modular, reusable, and maintainable code.</p>
+            </section>
+
+            <section id="game_begins_section" class="content-section">
+                 <div class="game-begins-separator">
+                    THE REAL GAME BEGINS HERE...
+                </div>
+                <p class="text-center text-lg">The following sections delve into more advanced Data Structures and Algorithms, building upon the foundational concepts covered earlier. These topics are crucial for tackling complex problems and excelling in software engineering interviews and development.</p>
+            </section>
+
+            <section id="video08" class="content-section">
+                <h2>Video 08: Advance Array problems</h2>
+                <p>This module delves into more complex array manipulation techniques and algorithms, crucial for optimizing performance and solving challenging problems often encountered in technical interviews.</p>
+                <ul>
+                    <li><strong>Q33. Left and Right rotation by k element.</strong>
+                        <ul><li>Implementing efficient algorithms for rotating array elements to the left or right by a specified number of positions <span class="formula">k</span>. Techniques might include using a temporary array, reversing segments, or Juggling Algorithm.</li></ul>
+                    </li>
+                    <li><strong>Q34. Remove duplicates from the sorted Array.</strong>
+                        <ul><li>Optimizing sorted arrays by efficiently removing redundant elements in-place, typically using a two-pointer approach.</li></ul>
+                    </li>
+                    <li><strong>Q35. Merge sorted Array.</strong>
+                        <ul><li>Combining two distinct sorted arrays into a single, comprehensive sorted array. This can be done by creating a new array or merging in-place if one array has enough capacity.</li></ul>
+                    </li>
+                    <li><strong>Q36. Best time to buy and sell stocks.</strong>
+                        <ul><li>Developing strategies to find the maximum profit that can be achieved from buying and selling a single stock (or multiple transactions in variations of the problem). Often involves iterating through prices and tracking minimum buy price and maximum profit.</li></ul>
+                    </li>
+                    <li><strong>Q37. Sort the color.</strong>
+                        <ul><li>Solving the "Dutch National Flag" problem: sorting an array containing only 0s, 1s, and 2s in-place and in a single pass, typically using a three-pointer approach.</li></ul>
+                    </li>
+                    <li><strong>Q38. Maximum Subarray/kadane's algorithm.</strong>
+                        <ul><li>Finding the contiguous subarray within a one-dimensional array of numbers which has the largest sum. Kadane's algorithm provides an efficient O(n) solution.</li></ul>
+                    </li>
+                    <li><strong>Q39. Majority Element/Moore's voting algorithm.</strong>
+                        <ul><li>Identifying the element that appears more than <span class="formula">&lfloor; n/2 &rfloor;</span> times in an array. Moore's Voting Algorithm is an efficient way to solve this.</li></ul>
+                    </li>
+                    <li><strong>Q40. Trapping Rain water.</strong>
+                        <ul><li>Calculating the maximum amount of water that can be trapped between vertical bars of varying heights represented in an array. This problem can be solved using various approaches, including pre-calculating left/right max heights or using a two-pointer approach.</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="video09" class="content-section">
+                <h2>Video 09: Sorting Algorithm- Part1</h2>
+                <p>This module introduces fundamental comparison-based sorting algorithms. While not always the most efficient for large datasets, they are important for understanding core sorting concepts.</p>
+                <h3>Bubble sort</h3>
+                <p>A simple sorting algorithm that repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order. The pass through the list is repeated until no swaps are needed, which indicates that the list is sorted. Time complexity: O(n<sup>2</sup>).</p>
+                <h3>Selection sort</h3>
+                <p>An in-place comparison sorting algorithm. It divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of philanthroPY. Time complexity: O(n<sup>2</sup>).</p>
+                <h3>Insertion sort</h3>
+                <p>A simple sorting algorithm that builds the final sorted array (or list) one item at a time. It is much less efficient on large lists than more advanced algorithms such as quicksort, heapsort, or merge sort, but it can be efficient for small datasets or nearly sorted data. Time complexity: O(n<sup>2</sup>).</p>
+            </section>
+
+            <section id="video10" class="content-section">
+                <h2>Video 10: Sorting Algorithm- Part2</h2>
+                <p>This module covers more efficient and widely used sorting algorithms, often based on the "divide and conquer" paradigm, leading to better average and worst-case time complexities for large datasets.</p>
+                <h3>Quick sort</h3>
+                <p>A highly efficient, in-place, divide-and-conquer sorting algorithm. It works by selecting a 'pivot' element from the array and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot. The sub-arrays are then sorted recursively. Average time complexity: O(n log n), Worst-case: O(n<sup>2</sup>).</p>
+                <h3>Merge sort</h3>
+                <p>A stable, divide-and-conquer sorting algorithm. It divides the unsorted list into <span class="formula">n</span> sublists, each containing one element (a list of one element is considered sorted). Then it repeatedly merges sublists to produce new sorted sublists until there is only one sorted list remaining. Time complexity: O(n log n) in all cases. Requires O(n) auxiliary space.</p>
+            </section>
+
+            <section id="video11" class="content-section">
+                <h2>Video 11: Cyclic sort</h2>
+                <p>This module focuses on Cyclic Sort, an efficient in-place sorting algorithm that is particularly useful for problems involving arrays where numbers are in a specific range (e.g., 1 to N).</p>
+                <p>The core idea is to place each number at its correct index. If the number <span class="formula">x</span> is at index <span class="formula">i</span> but should be at index <span class="formula">x-1</span> (for 1-based indexing converted to 0-based), swap it with the element at index <span class="formula">x-1</span>. Repeat until all numbers are correctly placed.</p>
+                <ul>
+                    <li><strong>Q41. Missing number.</strong>
+                        <ul><li>Given an array containing <span class="formula">n</span> distinct numbers taken from <span class="formula">0, 1, ..., n</span>, find the one that is missing from the array. Cyclic sort can place numbers at their correct indices, making it easy to find the first index that doesn't match its value.</li></ul>
+                    </li>
+                    <li><strong>Q42. Find all the disappeared in Array.</strong>
+                        <ul><li>Given an array of integers where <span class="formula">1 &le; a[i] &le; n</span> (n = size of array), some elements appear twice and others appear once. Find all the elements from <span class="formula">[1, n]</span> inclusive that do not appear in this array. Cyclic sort can help place numbers, then iterate to find missing ones.</li></ul>
+                    </li>
+                    <li><strong>Q43. First positive number.</strong>
+                        <ul><li>Given an unsorted integer array, find the smallest missing positive integer (i.e., > 0). This can be adapted using cyclic sort ideas to place positive numbers in their correct positions.</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="binary_search" class="content-section">
+                <h2>Binary Search</h2>
+                <p>This section thoroughly explores Binary Search, an extremely efficient algorithm for searching in sorted data structures (typically arrays). It works by repeatedly dividing the search interval in half. Time complexity: O(log n).</p>
+                <ul>
+                    <li><strong>Q44. Binary search.</strong>
+                        <ul><li>Implementing the core binary search algorithm to find a target element in a sorted array. Involves maintaining low, high, and mid pointers.</li></ul>
+                    </li>
+                    <li><strong>Q45. Search Insert position.</strong>
+                        <ul><li>Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.</li></ul>
+                    </li>
+                    <li><strong>Q46. Search in rotated sorted Array.</strong>
+                        <ul><li>Searching for a target value in a sorted array that has been rotated at an unknown pivot point. This requires a modified binary search to handle the rotation.</li></ul>
+                    </li>
+                    <li><strong>Q47. Book allocation.</strong>
+                        <ul><li>A classic problem where you need to allocate books to students such that the maximum number of pages assigned to a student is minimized. This can be solved using binary search on the answer (the maximum pages).</li></ul>
+                    </li>
+                    <li><strong>Q48. Koko eating.</strong> (Koko eating bananas)
+                        <ul><li>Koko has to eat <span class="formula">N</span> piles of bananas before the guards come back in <span class="formula">H</span> hours. Find the minimum integer <span class="formula">K</span> (eating speed in bananas per hour) such that she can eat all the bananas within <span class="formula">H</span> hours. Solved by binary searching on possible values of K.</li></ul>
+                    </li>
+                    <li><strong>Q49. Threshold limit.</strong>
+                        <ul><li>Problems that involve finding an optimal threshold value based on certain conditions or constraints, often solvable with binary search on the possible range of threshold values. For example, "Find the smallest divisor such that the sum of division results is less than or equal to a threshold".</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="hashing" class="content-section">
+                <h2>Hashing</h2>
+                <p>This section introduces Hashing, a technique used for efficient data storage and retrieval. It involves mapping keys to indices in a hash table using a hash function. In JavaScript, objects and `Map` objects are commonly used to implement hash-based structures.</p>
+                <ul>
+                    <li><strong>Q50. Print the frequency of each number.</strong>
+                        <ul><li>Counting the occurrences of each unique element within an array using a hash map (e.g., a JavaScript object or `Map`) to store elements as keys and their frequencies as values.</li></ul>
+                    </li>
+                    <li><strong>Q51. Print the unique element.</strong>
+                        <ul><li>Identifying and printing elements that appear only once in a collection. This can be done by first finding frequencies using hashing.</li></ul>
+                    </li>
+                    <li><strong>Q52. Check if sentence is Pangram.</strong>
+                        <ul><li>Determining if a given sentence contains every letter of the alphabet at least once. A hash set (or a boolean array for alphabet characters) can be used to track seen letters.</li></ul>
+                    </li>
+                    <li><strong>Q53. Sort the people.</strong>
+                        <ul><li>Given an array of names and an array of corresponding heights, sort the people by their heights in descending order. Hashing can be used to associate names with heights before sorting.</li></ul>
+                    </li>
+                    <li><strong>Q54. Two sum.</strong>
+                        <ul><li>Given an array of integers, find two numbers such that they add up to a specific target sum. Hashing can solve this in O(n) time by storing numbers seen so far and checking if `target - currentNumber` exists in the hash map.</li></ul>
+                    </li>
+                    <li><strong>Q55. Subarray sum equal to K.</strong>
+                        <ul><li>Counting the number of contiguous subarrays whose sum equals a given target <span class="formula">K</span>. This can be solved efficiently using a hash map to store prefix sums and their frequencies.</li></ul>
+                    </li>
+                    <li><strong>Q56. Longest Subarray with sum K.</strong>
+                        <ul><li>Finding the length of the longest contiguous subarray whose sum equals a given target <span class="formula">K</span>. Similar to the previous problem, prefix sums and a hash map are useful here.</li></ul>
+                    </li>
+                    <li><strong>Q57. Longest consecutive sequence.</strong>
+                        <ul><li>Finding the length of the longest sequence of consecutive elements in an unsorted array. A hash set can be used to store all numbers for O(1) lookups, then iterate and extend sequences.</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="linked_list" class="content-section">
+                <h2>Linked List</h2>
+                <p>This section covers Linked Lists, a dynamic linear data structure where elements (nodes) are not stored at contiguous memory locations but are linked using pointers. Each node contains data and a reference (or link) to the next node in the sequence.</p>
+                <h3>Implementation</h3>
+                <p>Learning to build a basic Linked List structure from scratch. This typically involves defining a `Node` class (with `data` and `next` properties) and a `LinkedList` class with methods to manage the list (e.g., `head`, `tail`, `size`, `add`, `remove`).</p>
+                <ul>
+                    <li><strong>Q58. Design Linked List.</strong>
+                        <ul><li>Implementing common Linked List operations such as:
+                            <ul>
+                                <li>`get(index)`: Get the value of the index-th node.</li>
+                                <li>`addAtHead(val)`: Add a node of value `val` before the first element.</li>
+                                <li>`addAtTail(val)`: Append a node of value `val` to the last element.</li>
+                                <li>`addAtIndex(index, val)`: Add a node of value `val` before the index-th node.</li>
+                                <li>`deleteAtIndex(index)`: Delete the index-th node.</li>
+                            </ul>
+                        </li></ul>
+                    </li>
+                    <li><strong>Q59. Middle of the Linked List.</strong>
+                        <ul><li>Finding the middle node of a singly linked list efficiently, often using the "slow and fast pointer" technique.</li></ul>
+                    </li>
+                    <li><strong>Q60. Linked List cycle.</strong>
+                        <ul><li>Detecting if a given singly linked list contains a cycle (i.e., a node points back to a previous node). Floyd's cycle-finding algorithm (tortoise and hare) is commonly used.</li></ul>
+                    </li>
+                    <li><strong>Q61. Reverse Linked List.</strong>
+                        <ul><li>Reversing the order of nodes in a singly linked list, typically by iterating through the list and changing `next` pointers. Can be done iteratively or recursively.</li></ul>
+                    </li>
+                    <li><strong>Q62. Delete the node in Linked List.</strong>
+                        <ul><li>Deleting a specific node from a singly linked list. The approach varies if you're given the head and the value to delete, or a direct reference to the node to be deleted (and it's not the tail).</li></ul>
+                    </li>
+                    <li><strong>Q63. Reverse Node in K-Group.</strong>
+                        <ul><li>Reversing the nodes of a linked list <span class="formula">k</span> at a time and returning its modified list. If the number of nodes is not a multiple of <span class="formula">k</span>, then left-out nodes, in the end, should remain as it is.</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="queue_stack" class="content-section">
+                <h2>Queue and Stack</h2>
+                <p>This section explores Queue (First-In, First-Out - FIFO) and Stack (Last-In, First-Out - LIFO), two fundamental linear data structures with distinct access patterns and numerous applications.</p>
+                <h3>Implementation of stack and queue</h3>
+                <p>Learning to build these data structures from scratch.
+                    <ul>
+                        <li><strong>Stack:</strong> Can be implemented using arrays (with `push` and `pop`) or linked lists (adding/removing from the head).</li>
+                        <li><strong>Queue:</strong> Can be implemented using arrays (requires careful management of front/rear pointers or shifting elements) or linked lists (adding to tail, removing from head).</li>
+                    </ul>
+                </p>
+                <ul>
+                    <li><strong>Q64. Valid parenthesis.</strong>
+                        <ul><li>Checking if a string containing only '(', ')', '{', '}', '[', and ']' is valid (i.e., all opening brackets are closed by the same type of brackets in the correct order). Stacks are ideal for this.</li></ul>
+                    </li>
+                    <li><strong>Q65. Implement stack using queue.</strong>
+                        <ul><li>Creating a stack's LIFO functionality using one or more queues (which are FIFO). This involves clever manipulation of queue operations.</li></ul>
+                    </li>
+                    <li><strong>Q66. Implement queue using stack.</strong>
+                        <ul><li>Creating a queue's FIFO functionality using one or more stacks (which are LIFO). This typically involves using two stacks.</li></ul>
+                    </li>
+                    <li><strong>Q67. Next larger element.</strong>
+                        <ul><li>For each element in an array, find the first element to its right that is greater than it. If no such element exists, consider it -1. Stacks can be used efficiently here.</li></ul>
+                    </li>
+                    <li><strong>Q68. Largest Rectangle in histogram.</strong>
+                        <ul><li>Given an array of integers representing heights of bars in a histogram, find the area of the largest rectangle that can be formed within the histogram. Stacks can help find the nearest smaller bars to the left and right for each bar.</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="recursion_backtracking" class="content-section">
+                <h2>Recursion and Backtracking</h2>
+                <p>This section covers Recursion, a powerful programming technique where a function calls itself to solve smaller instances of the same problem, and Backtracking, an algorithmic technique for solving problems recursively by trying to build a solution incrementally and abandoning paths that don't work.</p>
+                <ul>
+                    <li><strong>Q69. print n hello times.</strong>
+                        <ul><li>A basic recursive function to demonstrate repetitive tasks by calling itself `n` times with a base case to stop.</li></ul>
+                    </li>
+                    <li><strong>Q70. print 1-n natural number.</strong>
+                        <ul><li>Implement a recursive function to print numbers in ascending order from 1 to `n`.</li></ul>
+                    </li>
+                    <li><strong>Q71. print n-1 natural number.</strong> (Likely means n down to 1)
+                        <ul><li>Implement a recursive function to print numbers in descending order from `n` down to 1.</li></ul>
+                    </li>
+                    <li><strong>Q72. sum of n natural number.</strong>
+                        <ul><li>Calculate the sum of the first `n` natural numbers recursively: <span class="formula">sum(n) = n + sum(n-1)</span>.</li></ul>
+                    </li>
+                    <li><strong>Q73. fact of n natural number.</strong>
+                        <ul><li>Compute the factorial of a number <span class="formula">n</span> recursively: <span class="formula">fact(n) = n * fact(n-1)</span>.</li></ul>
+                    </li>
+                    <li><strong>Q74. print the sum of digit.</strong>
+                        <ul><li>Recursively calculate the sum of the digits of a number: <span class="formula">sumDigits(num) = (num % 10) + sumDigits(Math.floor(num / 10))</span>.</li></ul>
+                    </li>
+                    <li><strong>Q75. Fibonacci series (both version).</strong>
+                        <ul><li>Implement the Fibonacci sequence (<span class="formula">F(n) = F(n-1) + F(n-2)</span>) using both a naive recursive approach (which is inefficient due to repeated calculations) and an optimized version (e.g., using memoization/dynamic programming, or an iterative approach for comparison).</li></ul>
+                    </li>
+                    <li><strong>Q76. Tower of Hanoi.</strong>
+                        <ul><li>Solve the classic Tower of Hanoi puzzle using a recursive algorithm.</li></ul>
+                    </li>
+                    <li><strong>Q77. Josephous problem.</strong> (Josephus problem)
+                        <ul><li>Solve the Josephus circle problem (where people are eliminated in a circle) using recursion to find the survivor.</li></ul>
+                    </li>
+                    <li><strong>Q78. Subset.</strong>
+                        <ul><li>Generate all possible subsets (the power set) of a given set of elements using recursion/backtracking.</li></ul>
+                    </li>
+                    <li><strong>Q79. Permutation.</strong>
+                        <ul><li>Generate all possible permutations (arrangements) of a given set of distinct elements using recursion/backtracking.</li></ul>
+                    </li>
+                    <li><strong>Q80. Letter combination sum.</strong> (Likely "Letter Combinations of a Phone Number")
+                        <ul><li>Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent on a standard phone keypad. Solved with backtracking.</li></ul>
+                    </li>
+                    <li><strong>Q81. Sudoku Solver.</strong>
+                        <ul><li>Write a program to solve Sudoku puzzles by filling the empty cells using a backtracking algorithm.</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="binary_tree" class="content-section">
+                <h2>Binary Tree</h2>
+                <p>This section introduces Binary Trees, a hierarchical data structure where each node has at most two children, referred to as the left child and the right child. They are fundamental in computer science for representing hierarchical data and enabling efficient searching and sorting.</p>
+                <h3>Implementation</h3>
+                <p>Learning to build a basic Binary Tree structure. This typically involves defining a `Node` class (with `value`, `left` child, and `right` child properties) and methods to insert nodes and traverse the tree.</p>
+                <h3>DFS traversals - teeno version (all three versions)</h3>
+                <p>Depth-First Search (DFS) explores as far as possible along each branch before backtracking.
+                    <ul>
+                        <li><strong>Inorder Traversal:</strong> Traverse the left subtree, visit the root, then traverse the right subtree (Mnemonic: Left -> Root -> Right). Often used to get elements in sorted order from a BST.</li>
+                        <li><strong>Preorder Traversal:</strong> Visit the root, traverse the left subtree, then traverse the right subtree (Mnemonic: Root -> Left -> Right). Often used to create a copy of the tree or to get prefix expressions.</li>
+                        <li><strong>Postorder Traversal:</strong> Traverse the left subtree, traverse the right subtree, then visit the root (Mnemonic: Left -> Right -> Root). Often used to delete a tree or to get postfix expressions.</li>
+                    </ul>
+                </p>
+                <ul>
+                    <li><strong>Q82. Maximum depth of binary tree.</strong>
+                        <ul><li>Find the length of the longest path from the root node to any leaf node. This can be solved recursively.</li></ul>
+                    </li>
+                    <li><strong>Q83. Symmetric tree.</strong>
+                        <ul><li>Check if a binary tree is a mirror image of itself (i.e., symmetric around its center). This involves a recursive helper function comparing left and right subtrees.</li></ul>
+                    </li>
+                    <li><strong>Q84. BFS traversal.</strong> (Breadth-First Search / Level Order Traversal)
+                        <ul><li>Traverse a tree level by level, visiting all nodes at the current depth before moving to the next depth. Typically implemented using a queue.</li></ul>
+                    </li>
+                    <li><strong>Q85. Left view.</strong>
+                        <ul><li>Print the leftmost node at each level of the binary tree. Can be solved using BFS or DFS.</li></ul>
+                    </li>
+                    <li><strong>Q86. Top view.</strong>
+                        <ul><li>Print the nodes that are visible when viewing the tree from the top. This involves considering horizontal distances from the root. Typically solved using level order traversal with horizontal distance tracking.</li></ul>
+                    </li>
+                    <li><strong>Q87. LCA common ancestor.</strong> (Lowest Common Ancestor)
+                        <ul><li>Find the lowest common ancestor of two given nodes in a binary tree. The LCA is the deepest node that has both given nodes as descendants.</li></ul>
+                    </li>
+                    <li><strong>Q88. Construct binary tree from preorder and inorder.</strong>
+                        <ul><li>Reconstruct a unique binary tree given its preorder and inorder traversal sequences. This is a classic recursive problem.</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="bst" class="content-section">
+                <h2>Binary search tree-> BST</h2>
+                <p>This section focuses on Binary Search Trees (BSTs), a special type of binary tree where the value of each node is greater than or equal to all values in its left subtree and less than or equal to all values in its right subtree. This property enables efficient search, insertion, and deletion operations (typically O(log n) on average for balanced trees).</p>
+                <ul>
+                    <li><strong>Q89. Validate binary search tree.</strong>
+                        <ul><li>Check if a given binary tree adheres to the properties of a Binary Search Tree (i.e., for every node, all values in the left subtree are smaller, and all values in the right subtree are larger, and this holds recursively). This often involves an inorder traversal or passing down min/max range constraints.</li></ul>
+                    </li>
+                    <li><strong>Q90. KTH smallest element in BST.</strong>
+                        <ul><li>Find the <span class="formula">k<sup>th</sup></span> smallest element in a Binary Search Tree. An inorder traversal visits nodes in ascending order, so the <span class="formula">k<sup>th</sup></span> node visited is the answer.</li></ul>
+                    </li>
+                    <li><strong>Q91. Delete node in BST.</strong>
+                        <ul><li>Delete a node with a given key from a Binary Search Tree while preserving its BST properties. This involves handling three cases: node is a leaf, node has one child, or node has two children (requiring finding inorder successor or predecessor).</li></ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="graph" class="content-section">
+                <h2>Graph</h2>
+                <p>This section introduces Graphs, a non-linear data structure consisting of a set of vertices (nodes) and a set of edges that connect pairs of vertices. Graphs are used to model relationships and networks in various domains.</p>
+                <h3>Implementation</h3>
+                <p>Learning to build a basic Graph structure. Common representations include:
+                    <ul>
+                        <li><strong>Adjacency List:</strong> An array of lists, where each index <span class="formula">i</span> corresponds to vertex <span class="formula">i</span>, and the list at that index contains all vertices adjacent to <span class="formula">i</span>. Efficient for sparse graphs.</li>
+                        <li><strong>Adjacency Matrix:</strong> A 2D array where <span class="formula">matrix[i][j] = 1</span> (or weight) if there's an edge from vertex <span class="formula">i</span> to <span class="formula">j</span>, and 0 otherwise. Efficient for dense graphs or quick edge checking.</li>
+                    </ul>
+                </p>
+                <ul>
+                    <li><strong>Q92. BFS and DFS traversal.</strong>
+                        <ul>
+                            <li><strong>Breadth-First Search (BFS):</strong> Traverses the graph level by level, exploring all neighbors of a node before moving to their neighbors. Uses a queue. Useful for finding shortest paths in unweighted graphs.</li>
+                            <li><strong>Depth-First Search (DFS):</strong> Traverses the graph by exploring as far as possible along each branch before backtracking. Uses a stack (often implicitly via recursion). Useful for cycle detection, topological sort, finding connected components.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Q93. Cycle detection.</strong>
+                        <ul><li>Detecting the presence of cycles in both directed graphs (e.g., using DFS and tracking recursion stack) and undirected graphs (e.g., using DFS and keeping track of parent nodes, or using Disjoint Set Union - DSU).</li></ul>
+                    </li>
+                    <li><strong>Q94. Topological sort.</strong>
+                        <ul><li>For a Directed Acyclic Graph (DAG), find a linear ordering of its vertices such that for every directed edge <span class="formula">uv</span> from vertex <span class="formula">u</span> to vertex <span class="formula">v</span>, <span class="formula">u</span> comes before <span class="formula">v</span> in the ordering. Kahn's algorithm (using in-degrees and a queue) or DFS-based approach can be used.</li></ul>
+                    </li>
+                    <li><strong>Q95. Shortest path Alorithm's.</strong> (Algorithms)
+                        <ul><li>Introduction to fundamental shortest path algorithms:
+                            <ul>
+                                <li><strong>Dijkstra's Algorithm:</strong> Finds the shortest paths from a single source vertex to all other vertices in a weighted graph with non-negative edge weights.</li>
+                                <li><strong>Bellman-Ford Algorithm:</strong> Finds shortest paths from a single source vertex to all other vertices in a weighted graph, and can handle negative edge weights (also detects negative cycles).</li>
+                                </ul>
+                        </li></ul>
+                    </li>
+                </ul>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('#sidebarNav a');
+            const contentSections = document.querySelectorAll('.content-section');
+            const gameBeginsSection = document.getElementById('game_begins_section');
+
+            function updateContent(hash) {
+                contentSections.forEach(section => section.classList.remove('active'));
+                navLinks.forEach(link => link.classList.remove('active'));
+                
+                gameBeginsSection.classList.remove('active'); // Ensure this is hidden by default
+
+                let targetSectionId = hash ? hash.substring(1) : 'overview';
+                if (targetSectionId === 'game_begins_nav_placeholder') { // Special handling for separator
+                    targetSectionId = 'video08'; // Default to first advanced topic or handle as needed
+                }
+                
+                const targetSection = document.getElementById(targetSectionId);
+                const targetLink = document.querySelector(`#sidebarNav a[href="#${targetSectionId}"]`);
+
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    // If navigating to an advanced topic, also show the "game begins" separator section
+                    const advancedTopicIds = ['video08', 'video09', 'video10', 'video11', 'binary_search', 'hashing', 'linked_list', 'queue_stack', 'recursion_backtracking', 'binary_tree', 'bst', 'graph'];
+                    if (advancedTopicIds.includes(targetSectionId)) {
+                        gameBeginsSection.classList.add('active');
+                    }
+                } else {
+                    document.getElementById('overview').classList.add('active'); // Fallback to overview
+                }
+
+                if (targetLink && targetSectionId !== 'game_begins_nav_placeholder') {
+                     targetLink.classList.add('active');
+                } else if (targetSectionId === 'overview') {
+                    document.querySelector(`#sidebarNav a[href="#overview"]`).classList.add('active');
+                }
+                 window.scrollTo(0, 0); // Scroll to top of page
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('#') && href !== "#game_begins_nav_placeholder") {
+                        e.preventDefault();
+                        history.pushState(null, null, href);
+                        updateContent(href);
+                    } else if (href === "#game_begins_nav_placeholder") {
+                        e.preventDefault(); // Prevent default jump for the placeholder
+                        // Optionally, you could make it jump to the first advanced topic
+                        const firstAdvancedTopic = "#video08";
+                        history.pushState(null, null, firstAdvancedTopic);
+                        updateContent(firstAdvancedTopic);
+                    }
+                });
+            });
+
+            window.addEventListener('popstate', function () {
+                updateContent(window.location.hash);
+            });
+
+            // Initial content update based on URL hash or default to overview
+            updateContent(window.location.hash || '#overview');
+
+            // Chart.js data and configuration
+            const ctx = document.getElementById('curriculumChart').getContext('2d');
+            const curriculumData = {
+                labels: [
+                    'V1: Basic Logic', 'V2: Conditionals', 'V3: Loops', 'V4: Patterns', 
+                    'V5: Array', 'V6: String', 'V7: OOP', 'V8: Adv. Array', 
+                    'V9: Sorting Pt.1', 'V10: Sorting Pt.2', 'V11: Cyclic Sort', 
+                    'Binary Search', 'Hashing', 'Linked List', 'Queue & Stack', 
+                    'Recursion & Backtracking', 'Binary Tree', 'BST', 'Graph'
+                ],
+                datasets: [{
+                    label: 'Number of Key Items (Questions/Topics)',
+                    data: [
+                        9, 6, 15, 2, 9, 7, 5, 8, 3, 2, 3, 6, 8, 7, 6, 13, 9, 3, 5
+                    ],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.7)', 'rgba(75, 192, 192, 0.7)',
+                        'rgba(255, 206, 86, 0.7)', 'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)', 'rgba(255, 99, 132, 0.7)',
+                        'rgba(201, 203, 207, 0.7)','rgba(54, 162, 235, 0.7)', 
+                        'rgba(75, 192, 192, 0.7)','rgba(255, 206, 86, 0.7)',
+                        'rgba(153, 102, 255, 0.7)','rgba(255, 159, 64, 0.7)',
+                        'rgba(255, 99, 132, 0.7)','rgba(201, 203, 207, 0.7)',
+                        'rgba(54, 162, 235, 0.7)','rgba(75, 192, 192, 0.7)',
+                        'rgba(255, 206, 86, 0.7)','rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)',
+                        'rgba(255, 206, 86, 1)', 'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)', 'rgba(255, 99, 132, 1)',
+                        'rgba(201, 203, 207, 1)','rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)','rgba(255, 206, 86, 1)',
+                        'rgba(153, 102, 255, 1)','rgba(255, 159, 64, 1)',
+                        'rgba(255, 99, 132, 1)','rgba(201, 203, 207, 1)',
+                        'rgba(54, 162, 235, 1)','rgba(75, 192, 192, 1)',
+                        'rgba(255, 206, 86, 1)','rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            new Chart(ctx, {
+                type: 'bar', // Changed to bar for better readability with many categories
+                data: curriculumData,
+                options: {
+                    indexAxis: 'y', // Makes it a horizontal bar chart
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Number of Key Items' }
+                        },
+                        y: {
+                            ticks: { autoSkip: false } // Ensure all labels are shown
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Curriculum Content Distribution',
+                            font: { size: 18 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.x !== null) {
+                                        label += context.parsed.x;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

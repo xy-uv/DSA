@@ -1,0 +1,192 @@
+DSA with JS
+
+Video 01: Basic Logic on JS -> Variable, Operator, Operation on Operator
+>Q1. Sum of two integer.
+>. Relation between integer & string.
+>Q3. sum and message.
+>Q3. Accept and print the answer.
+>Q4. Swap two variables by three methods.
+
+-- Operators and their questions
+-- Math functions
+-> Math problems:
+Q5. calculate area and perimeter of rectangle.
+Q6. Area of triangle by heron's formula.
+Q7. Circumference of circle
+
+
+Video 02: Conditional Statement
+Q8. Valid user
+Q9. Shop discount
+Q10. Electricity Bill
+Q11. BDT/INR Denomination
+-- Ternary operator, switch and one case handling multiple values
+
+
+Video 03: Loop
+-- Loop
+-- for Loop
+Q12. Print n numbers of 'hello worlds'
+Q13. One to n numbers and vice versa.
+Q14. Sum of n natural numbers and factorial of number
+Q15. Factors of number
+Q16. Prime numbers
+
+-- while Loop
+Q17. Sum of digits
+Q18. Reverse of number
+Q19. strong number
+
+-- do-while Loop
+Q20. Repeat hello
+Q21. dummy/sastra calculator.
+Q22. Guess the number
+
+
+Video 04: Pattern Programming
+-- Nested Loop
+-- Pattern Questions
+
+
+Video 05: Array
+-- Array
+-- Introduction
+-- Fixed and Dynamic size Array
+-- accept value from user and assign in the Array
+Q23. sum of Array's element
+Q24. max element from Array
+Q25. second max element from Array
+Q26. reverse the Array
+Q27. All zeroes to left and all ones to right
+
+
+Video 06: String
+-- Introduction of string
+-- Methods of string
+Q28. print each character on new line.
+Q29. print in reverse order
+Q30. check if string is pallindrom or not
+Q31. Toggle each character
+Q32. Frequency of each character
+
+
+Video 07: OOP(class and object)
+-- class and object
+-- constructor
+-- prototype object
+-- this keyword
+-- design problems
+
+
+
+THE REAL GAME BEGIN START FROM HERE.........................
+
+
+
+Video 08: Advance Array problems
+Q33. Left and Right rotation by k element
+Q34. Remove duplicates from the sorted Array
+Q35. Merge sorted Array
+Q36. Best time to buy and sell stocks
+Q37. Sort the color
+Q38. Maximum Subarray/kadane's algorithm
+Q39. Majority Element/Moore's voting algorithm
+Q40. Trapping Rain water
+
+
+Video 09: Sorting Algorithm- Part1
+-- Bubble sort
+-- Selection sort
+-- Insertion sort
+
+
+Video 10: Sorting Algorithm- Part2
+-- Quick sort
+-- Merge sort
+
+
+Video 11: Cyclic sort
+Q41. Missing number
+Q42. Find all the disappeared in Array
+Q43. First positive number
+
+
+--- Binary Search
+Q44. Binary search
+Q45. Search Insert position
+Q46. Search in rotated sorted Array
+Q47. Book allocation
+Q48. Koko eating
+Q49. Threshold limit
+
+
+--- Hashing
+Q50. Print the frequency of each number
+Q51. Print the unique element 
+Q52. Check if sentence is Pangram
+Q53. Sort the people
+Q54. Two sum
+Q55. Subarray sum equal to K
+Q56. Longest Subarray with sum K
+Q57. Longest consecutive sequence
+
+
+--- LinkedList
+-- Implementation
+Q58. Design Linked List
+Q59. Middle of the Linked List
+Q60. Linked List cycle
+Q61. Reverse Linked List
+Q62. Delete the node in Linked List
+Q63. Reverse Node in K-Group
+
+
+--- Queue and Stack
+-- Implementation of stack and queue
+Q64. Valid parenthesis
+Q65. Implement stack using queue
+Q66. Implement queue using stack
+Q67. Next larger element.
+Q68. Largest Rectangle in histogram
+
+
+--- Recursion and Backtracking
+Q69. print n hello times
+Q70. print 1-n natural number
+Q71. print n-1 natural number
+Q72. sum of n natural number
+Q73. fact of n natural number
+Q74. print the sum of digit
+Q75. Fibonacci series (both version)
+Q76. Tower of Hanoi
+Q77. Josephous problem
+Q78. Subset
+Q79. Permutation
+Q80. Letter combination sum
+Q81. Sudoku Solver
+
+
+--- Binary tree
+-- Implementation
+-- DFS traversals - teeno version
+Q82. Maximum depth of binary tree
+Q83. Symmetric tree
+Q84. BFS traversal
+Q85. Left view
+Q86. Top view
+Q87. LCA common ancestor
+Q88. Construct binary tree from preorder and inorder
+
+
+--- Binary search tree-> BST
+Q89. Validate binary search tree
+Q90. KTH smallest element in BST
+Q91. Delete node in BST
+
+
+--- Graph
+-- Implementation 
+Q92. BFS and DFS traversal
+Q93. Cycle detection
+Q94. Topological sort
+Q95. Shortest path Alorithm's
